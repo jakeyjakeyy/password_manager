@@ -26,11 +26,9 @@ class Register(APIView):
 class SaltResponse(APIView):
     authentication_classes = [JWTAuthentication]
 
-    def post(self, request):
+    def get(self, request):
         try:
-            logger.info(f"Retrieving salt for {request.user}")
-            salt = models.User.objects.get(user=request.user)
-            logger.info(f"Salt retrieved for {request.user}")
+            salt = models.User.objects.get(username=request.user)
             password_components = salt.password.split("$")
             return Response({"salt": password_components[2]}, status=200)
         except Exception as e:

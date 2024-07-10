@@ -60,7 +60,7 @@ async function handleLogin() {
   password.value = "";
   confirmPassword.value = "";
 
-  // Now we need to get the salt
+  // Get our salt
   const saltResponse = await fetch(`${serverURL}/api/salt`, {
     method: "GET",
     headers: {
@@ -69,6 +69,7 @@ async function handleLogin() {
   });
   const saltData = await saltResponse.json();
   cookies.set("salt", saltData.salt);
+  console.log(saltData);
 }
 
 async function handleRegister() {
