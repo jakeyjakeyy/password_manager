@@ -13,11 +13,13 @@ logger = logging.getLogger(__name__)
 class Register(APIView):
     def post(self, request):
         try:
-            user = models.User.objects.create_user(
+            user = models.User.objects.create(
                 username=request.data["username"],
-                password=request.data["password"],
             )
+            user.set_password(request.data["password"])
             user.save()
+            salt = models.ClientKeyDerivationSalt.objects.create(user=user)
+            salt.save()
             return Response({"message": "User created"}, status=200)
         except Exception as e:
             return Response({"message": "User creation failed"}, status=400)
@@ -28,8 +30,7 @@ class SaltResponse(APIView):
 
     def get(self, request):
         try:
-            salt = models.User.objects.get(username=request.user)
-            password_components = salt.password.split("$")
-            return Response({"salt": password_components[2]}, status=200)
+            salt = models.ClientKeyDerivationSalt.objects.get(user=request.user)
+            return Response({"salt": salt.salt}, status=200)
         except Exception as e:
             return Response({"message": "Failed to retrieve Salt"}, status=400)

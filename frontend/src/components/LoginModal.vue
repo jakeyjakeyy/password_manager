@@ -95,6 +95,7 @@ async function handleRegister() {
 const handleLogout = () => {
   cookies.remove("access_token");
   cookies.remove("refresh_token");
+  cookies.remove("salt");
   loggedin.value = false;
   closeAllModals();
   // window.location.reload();
