@@ -12,9 +12,11 @@
     "serve": "vite --host 0.0.0.0"
   },
   "dependencies": {
+    "bulma": "^1.0.1",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
-    "vue-router": "^4.3.3"
+    "vue-router": "^4.3.3",
+    "vue3-cookies": "^1.0.6"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.4",
