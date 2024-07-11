@@ -81,16 +81,26 @@ async function decryptPassword(
   iv: Uint8Array,
   key: CryptoKey
 ) {
+  const encryptedPasswordBuffer = objectToUint8Array(encryptedPassword);
+  const ivBuffer = objectToUint8Array(iv);
   const decrypted = await window.crypto.subtle.decrypt(
     {
       name: "AES-GCM",
-      iv: iv,
+      iv: ivBuffer,
     },
     key,
-    encryptedPassword
+    encryptedPasswordBuffer
   );
   const decoder = new TextDecoder();
   return decoder.decode(decrypted);
+}
+
+function objectToUint8Array(obj: any) {
+  const arr = new Uint8Array(Object.keys(obj).length);
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = obj[i];
+  }
+  return arr;
 }
 
 export { deriveKey, storeKey, retrieveKey, encryptPassword, decryptPassword };

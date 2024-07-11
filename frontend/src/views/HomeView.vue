@@ -5,17 +5,25 @@ import LoginModal from "@/components/LoginModal.vue";
 import RefreshToken from "@/utils/RefreshToken";
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 import * as Cryptography from "@/utils/Cryptography";
+import * as VaultEntry from "@/utils/VaultEntry";
 
 async function handleClick() {
-  // blabla
-  const key = await Cryptography.retrieveKey();
-  const password = "test";
-  const encrypted = await Cryptography.encryptPassword(password, key);
-  console.log(encrypted);
+  // const key = await Cryptography.retrieveKey();
+  // const password = "test";
+  // const encrypted = await Cryptography.encryptPassword(password, key);
+  // console.log(encrypted);
+  // const decrypted = await Cryptography.decryptPassword(
+  //   encrypted.encryptedPassword,
+  //   encrypted.iv,
+  //   key
+  // );
+  // console.log(decrypted);
+  // VaultEntry.Add("testPassword", "testUsername", "testName");
+  const entry = await VaultEntry.Retrieve();
   const decrypted = await Cryptography.decryptPassword(
-    encrypted.encryptedPassword,
-    encrypted.iv,
-    key
+    entry[0].password,
+    entry[0].iv,
+    await Cryptography.retrieveKey()
   );
   console.log(decrypted);
 }
