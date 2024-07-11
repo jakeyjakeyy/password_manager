@@ -34,3 +34,21 @@ class SaltResponse(APIView):
             return Response({"salt": salt.salt}, status=200)
         except Exception as e:
             return Response({"message": "Failed to retrieve Salt"}, status=400)
+
+
+class VaultEntry(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        try:
+            entry = models.VaultEntry.objects.create(
+                user=request.user,
+                name=request.data["name"],
+                username=request.data["username"],
+                password=request.data["password"],
+                iv=request.data["iv"],
+            )
+            entry.save()
+            return Response({"message": "Entry created"}, status=200)
+        except Exception as e:
+            return Response({"message": "Entry creation failed"}, status=400)

@@ -11,3 +11,14 @@ class ClientKeyDerivationSalt(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class VaultEntry(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    username = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
+    iv = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineComponent, ref } from "vue";
 import { useCookies } from "vue3-cookies";
+import { deriveKey, storeKey } from "@/utils/Cryptography";
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -68,8 +69,9 @@ async function handleLogin() {
     },
   });
   const saltData = await saltResponse.json();
-  cookies.set("salt", saltData.salt);
-  console.log(saltData);
+  // Derive our key
+  const key = await deriveKey(password.value, saltData.salt);
+  storeKey(key);
 }
 
 async function handleRegister() {
