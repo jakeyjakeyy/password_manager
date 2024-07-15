@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineComponent, ref } from "vue";
 import { useCookies } from "vue3-cookies";
-import { deriveKey, storeKey } from "@/utils/Cryptography";
+import { deriveKey, storeKey, deleteKey } from "@/utils/Cryptography";
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -72,6 +72,14 @@ async function handleLogin() {
   // Derive our key
   const key = await deriveKey(password.value, saltData.salt);
   storeKey(key);
+
+  // Event listener to delete the derived key and trigger logout when the user leaves the page
+  window.addEventListener("beforeunload", (event) => {
+    deleteKey();
+    cookies.remove("access_token");
+    cookies.remove("refresh_token");
+    cookies.remove("salt");
+  });
 }
 
 async function handleRegister() {

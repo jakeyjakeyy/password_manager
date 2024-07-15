@@ -18,14 +18,14 @@ async function handleClick() {
   //   key
   // );
   // console.log(decrypted);
-  // VaultEntry.Add("testPassword", "testUsername", "testName");
-  const entry = await VaultEntry.Retrieve();
-  const decrypted = await Cryptography.decryptPassword(
-    entry[0].password,
-    entry[0].iv,
-    await Cryptography.retrieveKey()
-  );
-  console.log(decrypted);
+  VaultEntry.Add("testPassword2", "", "testName2");
+  // const entry = await VaultEntry.Retrieve();
+  // const decrypted = await Cryptography.decryptPassword(
+  //   entry[0].password,
+  //   entry[0].iv,
+  //   await Cryptography.retrieveKey()
+  // );
+  // console.log(decrypted);
 }
 </script>
 

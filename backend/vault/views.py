@@ -53,8 +53,12 @@ class VaultAdd(APIView):
                     for k in sorted(request.data["iv"].keys(), key=int)
                 ]
             )
-            logger.info(password_bytes.hex())
-            logger.info(iv_bytes.hex())
+            if models.VaultEntry.objects.filter(
+                user=request.user, name=request.data["name"]
+            ).exists():
+                return Response(
+                    {"message": "Entry with the same name already exists"}, status=400
+                )
             entry = models.VaultEntry.objects.create(
                 user=request.user,
                 name=request.data["name"],

@@ -47,6 +47,11 @@ async function storeKey(key: CryptoKey) {
   });
 }
 
+async function deleteKey() {
+  const db = await openDB("myDatabase", 1);
+  await db.delete("keys", "encryptionKey");
+}
+
 async function retrieveKey() {
   const db = await openDB("myDatabase", 1);
   const keyData = await db.get("keys", "encryptionKey");
@@ -103,4 +108,11 @@ function objectToUint8Array(obj: any) {
   return arr;
 }
 
-export { deriveKey, storeKey, retrieveKey, encryptPassword, decryptPassword };
+export {
+  deriveKey,
+  storeKey,
+  deleteKey,
+  retrieveKey,
+  encryptPassword,
+  decryptPassword,
+};
