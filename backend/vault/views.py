@@ -2,8 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from vault import models
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
+from rest_framework_simplejwt.views import TokenObtainPairView
 from dotenv import load_dotenv
 import logging
+import pyotp
+import time
 
 load_dotenv()
 
@@ -20,7 +25,16 @@ class Register(APIView):
             user.save()
             salt = models.ClientKeyDerivationSalt.objects.create(user=user)
             salt.save()
-            return Response({"message": "User created"}, status=200)
+
+            # 2FA registration
+            totpDevice = models.TOTPDevice.objects.create(
+                user=user, secret=pyotp.random_base32()
+            )
+            # Generate QR code URI
+            totp = pyotp.TOTP(totpDevice.secret)
+            uri = totp.provisioning_uri(name=user.username, issuer_name="Vault")
+
+            return Response({"message": "User created", "uri": uri}, status=200)
         except Exception as e:
             return Response({"message": "User creation failed"}, status=400)
 
@@ -100,3 +114,37 @@ class VaultRetrieve(APIView):
             return Response(response, status=200)
         except Exception as e:
             return Response({"message": "Failed to retrieve entries"}, status=400)
+
+
+# Extend the default TokenObtainPairSerializer to include 2FA
+class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
+    default_error_messages = {
+        "no_2fa": "2FA is not set up for this user.",
+        "invalid_2fa": "Invalid 2FA token.",
+    }
+
+    def validate(self, attrs):
+        # Standard validation to check user credentials
+        data = super().validate(attrs)
+
+        user = self.user
+
+        # Get the 2FA token from the request
+        two_fa_token = self.context["request"].data.get("twoFA", None)
+        if two_fa_token is None:
+            raise serializers.ValidationError(
+                self.default_error_messages["invalid_2fa"]
+            )
+        logger.info(f"2FA token: {two_fa_token}")
+        # Verify the 2FA token
+        totp = pyotp.TOTP(user.totpdevice.secret)
+        if not totp.verify(two_fa_token):
+            raise serializers.ValidationError(
+                self.default_error_messages["invalid_2fa"]
+            )
+
+        return data
+
+
+class TokenObtainPairViewWith2FA(TokenObtainPairView):
+    serializer_class = TokenObtainPairSerializerWith2FA

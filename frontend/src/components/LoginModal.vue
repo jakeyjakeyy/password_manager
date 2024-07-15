@@ -8,6 +8,7 @@ const serverURL = import.meta.env.VITE_BACKEND_URL;
 const username = ref("");
 const password = ref("");
 const confirmPassword = ref("");
+const twoFA = ref("");
 const loggedin = ref(false);
 const register = ref(false);
 
@@ -50,6 +51,7 @@ async function handleLogin() {
     body: JSON.stringify({
       username: username.value,
       password: password.value,
+      twoFA: twoFA.value,
     }),
   });
 
@@ -192,6 +194,18 @@ document.addEventListener("DOMContentLoaded", () => {
                   type="password"
                   placeholder="Password"
                   v-model="password"
+                />
+              </div>
+            </div>
+
+            <div class="field" v-if="!register">
+              <label class="label">2FA</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  placeholder="2FA"
+                  v-model="twoFA"
                 />
               </div>
             </div>
