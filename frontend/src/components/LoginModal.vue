@@ -2,6 +2,7 @@
 import { defineComponent, ref } from "vue";
 import { useCookies } from "vue3-cookies";
 import { deriveKey, storeKey, deleteKey } from "@/utils/Cryptography";
+import Qrcode from "qrcode.vue";
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -11,6 +12,7 @@ const confirmPassword = ref("");
 const twoFA = ref("");
 const loggedin = ref(false);
 const register = ref(false);
+const value = ref("");
 
 if (cookies.get("access_token") && cookies.get("refresh_token")) {
   loggedin.value = true;
@@ -38,11 +40,12 @@ const submitForm = async () => {
     await handleRegister();
   } else {
     await handleLogin();
+    closeAllModals();
   }
-  closeAllModals();
 };
 
 async function handleLogin() {
+  register.value = false;
   const response = await fetch(`${serverURL}/api/token`, {
     method: "POST",
     headers: {
@@ -56,6 +59,13 @@ async function handleLogin() {
   });
 
   const data = await response.json();
+  if (data.non_field_errors) {
+    alert(data.non_field_errors);
+    username.value = "";
+    password.value = "";
+    twoFA.value = "";
+    return;
+  }
   cookies.set("access_token", data.access);
   cookies.set("refresh_token", data.refresh);
   loggedin.value = true;
@@ -100,8 +110,10 @@ async function handleRegister() {
     alert(data.error);
     return;
   }
-  register.value = false;
-  handleLogin();
+  value.value = data.uri;
+  console.log("set data.uri to value");
+  // register.value = false;
+  // handleLogin();
 }
 
 const handleLogout = () => {
@@ -111,6 +123,11 @@ const handleLogout = () => {
   loggedin.value = false;
   closeAllModals();
   // window.location.reload();
+};
+
+const closeQR = () => {
+  value.value = "";
+  register.value = false;
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -162,6 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
       v-if="loggedin === false"
       class="button js-modal-trigger"
       data-target="login-modal"
+      @click="register = false"
     >
       Login
     </button>
@@ -170,8 +188,9 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="modal-background"></div>
 
       <div class="modal-content">
-        <div class="box">
-          <h1 class="title">Login</h1>
+        <div v-if="!value" class="box">
+          <h1 v-if="register === false" class="title">Login</h1>
+          <h1 v-else class="title">Register</h1>
           <form @submit.prevent="submitForm">
             <div class="field">
               <label class="label">Username</label>
@@ -231,6 +250,15 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </form>
         </div>
+        <div v-else class="box" id="qr-code-box">
+          <h1 class="title">
+            Scan the QR code below with your authenticator app
+          </h1>
+          <qrcode v-if="register && value" :value="value" />
+          <button class="button is-link" @click="closeQR">
+            I have scanned the QR code
+          </button>
+        </div>
       </div>
 
       <button class="modal-close is-large" aria-label="close"></button>
@@ -241,5 +269,10 @@ document.addEventListener("DOMContentLoaded", () => {
 <style>
 .login-modal {
   margin-right: 1rem;
+}
+#qr-code-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

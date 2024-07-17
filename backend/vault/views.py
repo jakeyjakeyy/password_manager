@@ -135,7 +135,6 @@ class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
             raise serializers.ValidationError(
                 self.default_error_messages["invalid_2fa"]
             )
-        logger.info(f"2FA token: {two_fa_token}")
         # Verify the 2FA token
         totp = pyotp.TOTP(user.totpdevice.secret)
         if not totp.verify(two_fa_token):
