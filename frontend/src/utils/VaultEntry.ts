@@ -1,5 +1,5 @@
 import * as Cryptography from "@/utils/Cryptography";
-import RefreshToken from "./RefreshToken";
+import { RefreshToken } from "./RefreshToken";
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;

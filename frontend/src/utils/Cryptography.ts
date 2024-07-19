@@ -81,11 +81,8 @@ async function encryptPassword(plainPassword: string, key: CryptoKey) {
   };
 }
 
-async function decryptPassword(
-  encryptedPassword: Uint8Array,
-  iv: Uint8Array,
-  key: CryptoKey
-) {
+async function decryptPassword(encryptedPassword: Uint8Array, iv: Uint8Array) {
+  const key = await retrieveKey();
   const encryptedPasswordBuffer = objectToUint8Array(encryptedPassword);
   const ivBuffer = objectToUint8Array(iv);
   const decrypted = await window.crypto.subtle.decrypt(

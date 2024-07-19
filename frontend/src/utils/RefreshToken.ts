@@ -32,4 +32,12 @@ async function RefreshToken() {
   }
 }
 
-export default RefreshToken;
+function checkLogin() {
+  const access = cookies.get("access_token");
+  if (!access) {
+    return false;
+  }
+  return true;
+}
+
+export { RefreshToken, checkLogin };
