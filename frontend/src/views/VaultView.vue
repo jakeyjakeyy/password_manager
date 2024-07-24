@@ -5,6 +5,7 @@ import { ref, onMounted } from "vue";
 import { Retrieve } from "@/utils/VaultEntry";
 import AddEntryModal from "@/components/Vault/AddEntryModal.vue";
 import VaultEntry from "@/components/Vault/VaultEntry.vue";
+import ImportEntries from "@/components/Vault/ImportEntries.vue";
 
 const router = useRouter();
 const vaultEntries = ref([]);
@@ -23,11 +24,17 @@ onMounted(async () => {
   <div class="vaultContainer">
     <div class="vaultHeader">
       <h1 class="title">Vault</h1>
-      <button class="button js-modal-trigger" data-target="add-entry-modal">
-        Add Entry
-      </button>
+      <div class="vaultHeaderButtons">
+        <button class="button js-modal-trigger" data-target="add-entry-modal">
+          Add Entry
+        </button>
+        <button class="button js-modal-trigger" data-target="import-modal">
+          Import
+        </button>
+      </div>
     </div>
     <AddEntryModal />
+    <ImportEntries />
     <div v-if="!vaultEntries.length" class="vaultEntries">
       <p>No entries found</p>
     </div>

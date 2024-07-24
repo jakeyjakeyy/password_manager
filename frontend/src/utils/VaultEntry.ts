@@ -6,7 +6,7 @@ const serverURL = import.meta.env.VITE_BACKEND_URL;
 
 async function Add(password: string, username: string, name: string) {
   const key = await Cryptography.retrieveKey();
-  const encrypted = await Cryptography.encryptPassword(password, key);
+  const encrypted = await Cryptography.encryptPassword(password);
   const encryptedPassword = encrypted.encryptedPassword;
   const iv = encrypted.iv;
 
@@ -33,6 +33,26 @@ async function Add(password: string, username: string, name: string) {
   }
 }
 
+async function AddBatch(entries: any) {
+  const response: any = await fetch(`${serverURL}/api/vault/add-batch`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${cookies.get("access_token")}`,
+    },
+    body: JSON.stringify({ entries: entries }),
+  });
+  if (response.status === 401) {
+    const refresh = await RefreshToken();
+    if (refresh) {
+      return AddBatch(entries);
+    } else {
+      alert("Log in again");
+    }
+  }
+  return response.json();
+}
+
 async function Retrieve() {
   const response: any = await fetch(`${serverURL}/api/vault/retrieve`, {
     method: "GET",
@@ -51,4 +71,4 @@ async function Retrieve() {
   }
   return response.json();
 }
-export { Add, Retrieve };
+export { Add, AddBatch, Retrieve };

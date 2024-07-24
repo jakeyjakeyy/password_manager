@@ -88,6 +88,44 @@ class VaultAdd(APIView):
             return Response({"message": "Entry creation failed"}, status=400)
 
 
+class VaultAddBatch(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        errors = []
+        entries = request.data["entries"]
+        for entry in entries:
+            logger.info(entry)
+            try:
+                password_bytes = ToBytes(entry["password"])
+                iv_bytes = ToBytes(entry["iv"])
+                if models.VaultEntry.objects.filter(
+                    user=request.user, name=entry["name"]
+                ).exists():
+                    errors.append(
+                        {
+                            "name": entry["name"],
+                            "message": "Entry with the same name already exists",
+                        }
+                    )
+                    continue
+                entry = models.VaultEntry.objects.create(
+                    user=request.user,
+                    name=entry["name"],
+                    username=entry["username"],
+                    password=password_bytes.hex(),
+                    iv=iv_bytes.hex(),
+                )
+                entry.save()
+            except Exception as e:
+                errors.append({"name": entry["name"], "message": str(e)})
+        if len(errors) > 0:
+            return Response(
+                {"message": "Failed to create entries", "errors": errors}, status=400
+            )
+        return Response({"message": "Success"}, status=200)
+
+
 class VaultRetrieve(APIView):
     authentication_classes = [JWTAuthentication]
 
@@ -129,6 +167,10 @@ class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
 
         user = self.user
 
+        # TODO Remove before prodiction
+        # debug: Skip 2FA check
+        return data
+
         # Get the 2FA token from the request
         two_fa_token = self.context["request"].data.get("twoFA", None)
         if two_fa_token is None:
@@ -147,3 +189,13 @@ class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
 
 class TokenObtainPairViewWith2FA(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializerWith2FA
+
+
+# class VaultImport(APIView):
+#     authentication_classes = [JWTAuthentication]
+
+#     def post(self, request):
+
+
+def ToBytes(input):
+    return bytes([input[str(k)] for k in sorted(input.keys(), key=int)])

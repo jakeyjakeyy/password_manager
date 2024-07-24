@@ -64,7 +64,8 @@ async function retrieveKey() {
   );
 }
 
-async function encryptPassword(plainPassword: string, key: CryptoKey) {
+async function encryptPassword(plainPassword: string) {
+  const key = await retrieveKey();
   const encoder = new TextEncoder();
   const iv = window.crypto.getRandomValues(new Uint8Array(12));
   const encrypted = await window.crypto.subtle.encrypt(
