@@ -66,8 +66,13 @@ async function handleLogin() {
     twoFA.value = "";
     return;
   }
-  cookies.set("access_token", data.access);
-  cookies.set("refresh_token", data.refresh);
+
+  // 30 minute expiry
+  const time = new Date();
+  const expiry = new Date(time.getTime() + 30 * 60000);
+  console.log(expiry);
+  cookies.set("access_token", data.access, expiry);
+  cookies.set("refresh_token", data.refresh, expiry);
   loggedin.value = true;
   username.value = "";
   password.value = "";
