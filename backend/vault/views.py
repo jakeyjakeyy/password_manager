@@ -55,18 +55,8 @@ class VaultAdd(APIView):
 
     def post(self, request):
         try:
-            password_bytes = bytes(
-                [
-                    request.data["password"][str(k)]
-                    for k in sorted(request.data["password"].keys(), key=int)
-                ]
-            )
-            iv_bytes = bytes(
-                [
-                    request.data["iv"][str(k)]
-                    for k in sorted(request.data["iv"].keys(), key=int)
-                ]
-            )
+            password_bytes = ToBytes(request.data["password"])
+            iv_bytes = ToBytes(request.data["iv"])
             if models.VaultEntry.objects.filter(
                 user=request.user, name=request.data["name"]
             ).exists():
@@ -95,7 +85,6 @@ class VaultAddBatch(APIView):
         errors = []
         entries = request.data["entries"]
         for entry in entries:
-            logger.info(entry)
             try:
                 password_bytes = ToBytes(entry["password"])
                 iv_bytes = ToBytes(entry["iv"])

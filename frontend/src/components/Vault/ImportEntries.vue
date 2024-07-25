@@ -47,9 +47,7 @@ async function Import() {
     }
     i++;
   }
-  console.log(entriesDict);
   const response = await AddBatch(entriesDict);
-  console.log(response);
 }
 </script>
 

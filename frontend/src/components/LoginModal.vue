@@ -111,7 +111,7 @@ async function handleRegister() {
     return;
   }
   value.value = data.uri;
-  console.log("set data.uri to value");
+  // We don't automatically log in anymore because the user needs to register their 2FA first
   // register.value = false;
   // handleLogin();
 }
