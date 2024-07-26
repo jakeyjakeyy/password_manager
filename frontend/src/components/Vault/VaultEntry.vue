@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { decryptPassword } from "@/utils/Cryptography";
+import { Edit, Delete } from "@/utils/VaultEntry";
 const { entry } = defineProps(["entry"]);
+const serverURL = import.meta.env.VITE_BACKEND_URL;
 const showPassword = ref(false);
 const password = ref("");
 const copiedConfirmation = ref(false);
@@ -18,18 +20,46 @@ const copyPassword = () => {
     copiedConfirmation.value = false;
   }, 1000);
 };
+
+const handleShowPassword = () => {
+  showPassword.value = !showPassword.value;
+  setTimeout(() => {
+    showPassword.value = false;
+  }, 5000);
+};
+
+const handleEdit = async () => {
+  const response = await fetch(`${serverURL}/api/vault/edit`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(entry),
+  });
+};
+
+const handleDelete = async () => {
+  const response = await Delete(entry.id);
+  if (response.status === 200) {
+    location.reload();
+  } else {
+    alert("Failed to delete entry");
+  }
+};
 </script>
 
 <template>
   <div class="vaultEntry">
     <div class="vaultEntryHeader">
       <h1 class="title">{{ entry.name }}</h1>
+      <button class="delete" @click="handleDelete"></button>
+      <button class="button is-primary" @click="handleEdit">Edit</button>
     </div>
     <div class="vaultEntryUsername">
       <p>{{ entry.username }}</p>
     </div>
     <div class="vaultEntryPassword">
-      <button class="button is-primary" @click="showPassword = !showPassword">
+      <button class="button is-primary" @click="handleShowPassword">
         {{ showPassword ? "Hide Password" : "Show Password" }}
       </button>
       <button
@@ -48,4 +78,9 @@ const copyPassword = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.vaultEntryHeader {
+  display: flex;
+  flex-direction: row;
+}
+</style>

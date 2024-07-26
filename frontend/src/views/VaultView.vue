@@ -9,7 +9,7 @@ import VaultEntry from "@/components/Vault/VaultEntry.vue";
 import ImportEntries from "@/components/Vault/ImportEntries.vue";
 
 const fuseOptions = {
-  keys: ["name"],
+  keys: ["name", "username", "url", "notes"],
   includeScore: true,
   includeMatches: true,
   threshold: 0.3,

@@ -13,4 +13,6 @@ urlpatterns = [
     path("vault/add", VaultAdd.as_view(), name="vault-add"),
     path("vault/add-batch", VaultAddBatch.as_view(), name="vault-add-batch"),
     path("vault/retrieve", VaultRetrieve.as_view(), name="vault-retrieve"),
+    path("vault/delete", VaultDelete.as_view(), name="vault-delete"),
+    path("vault/edit", VaultEdit.as_view(), name="vault-edit"),
 ]

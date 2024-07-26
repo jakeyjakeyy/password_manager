@@ -115,6 +115,41 @@ class VaultAddBatch(APIView):
         return Response({"message": "Success"}, status=200)
 
 
+class VaultDelete(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        try:
+            entry = models.VaultEntry.objects.get(id=request.data["id"])
+            if entry.user != request.user:
+                return Response({"message": "Unauthorized"}, status=401)
+            entry.delete()
+            return Response({"message": "Entry deleted"}, status=200)
+        except Exception as e:
+            logger.error(f"Failed to delete entry: {str(e)}")
+            return Response({"message": "Failed to delete entry"}, status=400)
+
+
+class VaultEdit(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        try:
+            entry = models.VaultEntry.objects.get(id=request.data["id"])
+            if entry.user != request.user:
+                return Response({"message": "Unauthorized"}, status=401)
+            password_bytes = ToBytes(request.data["password"])
+            iv_bytes = ToBytes(request.data["iv"])
+            entry.name = request.data["name"]
+            entry.username = request.data["username"]
+            entry.password = password_bytes.hex()
+            entry.iv = iv_bytes.hex()
+            entry.save()
+            return Response({"message": "Entry edited"}, status=200)
+        except Exception as e:
+            return Response({"message": "Failed to edit entry"}, status=400)
+
+
 class VaultRetrieve(APIView):
     authentication_classes = [JWTAuthentication]
 
@@ -136,6 +171,7 @@ class VaultRetrieve(APIView):
                         "username": entry.username,
                         "password": password,
                         "iv": iv,
+                        "id": entry.id,
                     }
                 )
             return Response(response, status=200)
