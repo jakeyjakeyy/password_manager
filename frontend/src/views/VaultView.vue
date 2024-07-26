@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { checkLogin } from "@/utils/RefreshToken";
 import { useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { Retrieve } from "@/utils/VaultEntry";
 import Fuse from "fuse.js";
 import AddEntryModal from "@/components/Vault/AddEntryModal.vue";
 import VaultEntry from "@/components/Vault/VaultEntry.vue";
 import ImportEntries from "@/components/Vault/ImportEntries.vue";
+
+interface VaultEntry {
+  id: number;
+  name: string;
+  username: string;
+  password: string;
+  iv: string;
+}
 
 const fuseOptions = {
   keys: ["name", "username", "url", "notes"],
@@ -20,6 +28,7 @@ const router = useRouter();
 const vaultEntries = ref([]);
 const searchTerm = ref("");
 const searchList = ref([]);
+const sortBy = ref("name");
 let fuse: any;
 
 onMounted(async () => {
@@ -36,6 +45,24 @@ const handleSearch = () => {
     .search(searchTerm.value)
     .map((result: any) => result.item);
 };
+
+const handleSort = () => {
+  console.log(sortBy.value);
+  if (sortBy.value === "name") {
+    vaultEntries.value.sort((a: VaultEntry, b: VaultEntry) => {
+      if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+      if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+      return 0;
+    });
+  } else if (sortBy.value === "newest") {
+    vaultEntries.value.sort((a: VaultEntry, b: VaultEntry) => {
+      if (a.id < b.id) return 1;
+      if (a.id > b.id) return -1;
+      return 0;
+    });
+  }
+  console.log(vaultEntries.value);
+};
 </script>
 
 <template>
@@ -49,6 +76,12 @@ const handleSearch = () => {
         <button class="button js-modal-trigger" data-target="import-modal">
           Import
         </button>
+      </div>
+      <div class="select">
+        <select v-model="sortBy" @change="handleSort">
+          <option value="name">Name</option>
+          <option value="newest">Newest</option>
+        </select>
       </div>
       <input
         v-model="searchTerm"
