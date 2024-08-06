@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { decryptPassword } from "@/utils/Cryptography";
-import { Edit, Delete } from "@/utils/VaultEntry";
-const { entry } = defineProps(["entry"]);
+import { Edit, Delete, Retrieve } from "@/utils/VaultEntry";
+const { entry, updateEntries } = defineProps(["entry", "updateEntries"]);
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 const showPassword = ref(false);
 const password = ref("");
@@ -40,8 +40,10 @@ const handleEdit = async () => {
 
 const handleDelete = async () => {
   const response = await Delete(entry.id);
-  if (response.status === 200) {
-    location.reload();
+  console.log(response);
+  if (response) {
+    console.log("Deleted entry");
+    updateEntries();
   } else {
     alert("Failed to delete entry");
   }

@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { Add } from "@/utils/VaultEntry";
+import { Add, Retrieve } from "@/utils/VaultEntry";
+const { updateEntries } = defineProps(["updateEntries"]);
 const username = ref("");
 const password = ref("");
 const name = ref("");
 const hidden = ref(true);
 
-const handleClick = () => {
-  Add(password.value, username.value, name.value);
+const handleClick = async () => {
+  const add = await Add(password.value, username.value, name.value);
+  updateEntries();
+  const modal = document.getElementById("add-entry-modal");
+  modal.classList.remove("is-active");
 };
 </script>
 

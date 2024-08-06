@@ -47,7 +47,6 @@ const handleSearch = () => {
 };
 
 const handleSort = () => {
-  console.log(sortBy.value);
   if (sortBy.value === "name") {
     vaultEntries.value.sort((a: VaultEntry, b: VaultEntry) => {
       if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
@@ -61,7 +60,11 @@ const handleSort = () => {
       return 0;
     });
   }
-  console.log(vaultEntries.value);
+};
+
+const updateEntries = async () => {
+  vaultEntries.value = await Retrieve();
+  fuse = new Fuse(vaultEntries.value, fuseOptions);
 };
 </script>
 
@@ -91,7 +94,7 @@ const handleSort = () => {
         @input="handleSearch"
       />
     </div>
-    <AddEntryModal />
+    <AddEntryModal :updateEntries="updateEntries" />
     <ImportEntries />
     <div v-if="!vaultEntries.length" class="vaultEntries">
       <p>No entries found</p>
@@ -103,7 +106,7 @@ const handleSort = () => {
     </div>
     <div v-else class="vaultEntries">
       <div v-for="entry in vaultEntries" class="vaultEntry">
-        <VaultEntry :entry="entry" />
+        <VaultEntry :entry="entry" :updateEntries="updateEntries" />
       </div>
     </div>
   </div>

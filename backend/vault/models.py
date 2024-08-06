@@ -29,7 +29,7 @@ class VaultEntry(models.Model):
     iv = models.CharField(null=False)
 
     def __str__(self):
-        return self.name
+        return "{}: {}".format(self.user.username, self.id)
 
 
 class TOTPDevice(Device):
