@@ -21,10 +21,10 @@ import LoginModal from "./components/LoginModal.vue";
         </a>
         <div id="navbar-main" class="navbar-menu">
           <div class="navbar-start">
-            <a class="navbar-item">
+            <a class="navbar-item" id="homeRouterButton">
               <RouterLink to="/">Home</RouterLink>
             </a>
-            <a class="navbar-item">
+            <a class="navbar-item" id="vaultRouterButton">
               <RouterLink to="/vault">Vault</RouterLink>
             </a>
             <div class="navbar-item has-dropdown is-hoverable">

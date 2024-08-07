@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
 import { deriveKey, storeKey, deleteKey } from "@/utils/Cryptography";
 import Qrcode from "qrcode.vue";
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
+const router = useRouter();
 
 const username = ref("");
 const password = ref("");
@@ -41,6 +43,7 @@ const submitForm = async () => {
   } else {
     await handleLogin();
     closeAllModals();
+    router.push("/vault");
   }
 };
 
@@ -70,7 +73,6 @@ async function handleLogin() {
   // 30 minute expiry
   const time = new Date();
   const expiry = new Date(time.getTime() + 30 * 60000);
-  console.log(expiry);
   cookies.set("access_token", data.access, expiry);
   cookies.set("refresh_token", data.refresh, expiry);
   loggedin.value = true;

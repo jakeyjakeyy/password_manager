@@ -37,6 +37,11 @@ onMounted(async () => {
   } else {
     vaultEntries.value = await Retrieve();
     fuse = new Fuse(vaultEntries.value, fuseOptions);
+    const navRouterButtons = document.querySelectorAll(".navbar-item");
+    navRouterButtons.forEach((button) => {
+      if (button.id === "vaultRouterButton") button.classList.add("is-active");
+      else button.classList.remove("is-active");
+    });
   }
 });
 
