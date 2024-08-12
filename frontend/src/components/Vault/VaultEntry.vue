@@ -54,7 +54,10 @@ const handleDelete = async () => {
   <div class="vaultEntry">
     <div class="vaultEntryHeader">
       <h1 class="title">{{ entry.name }}</h1>
-      <button class="delete" @click="handleDelete"></button>
+      <button
+        class="delete button js-modal-trigger"
+        data-target="confirm-delete-entry-modal"
+      ></button>
       <button class="button is-primary" @click="handleEdit">Edit</button>
     </div>
     <div class="vaultEntryUsername">
@@ -76,6 +79,16 @@ const handleDelete = async () => {
       <p v-else>
         <span v-for="i in password.length">*</span>
       </p>
+    </div>
+    <div class="modal" id="confirm-delete-entry-modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="box">
+          <p>Are you sure you want to delete this entry?</p>
+          <button class="button is-danger" @click="handleDelete">Delete</button>
+          <button class="button">Cancel</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
