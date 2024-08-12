@@ -11,7 +11,7 @@ const handleClick = async () => {
   const add = await Add(password.value, username.value, name.value);
   updateEntries();
   const modal = document.getElementById("add-entry-modal");
-  modal.classList.remove("is-active");
+  if (modal) modal.classList.remove("is-active");
 };
 </script>
 

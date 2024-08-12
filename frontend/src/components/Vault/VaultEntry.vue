@@ -7,6 +7,10 @@ const serverURL = import.meta.env.VITE_BACKEND_URL;
 const showPassword = ref(false);
 const password = ref("");
 const copiedConfirmation = ref(false);
+const modal = ref<HTMLElement | null>(null);
+const editing = ref(false);
+const changedValues = ref(false);
+let showPasswordTimeout: any = null;
 
 onMounted(async () => {
   password.value = await decryptPassword(entry.password, entry.iv);
@@ -23,19 +27,31 @@ const copyPassword = () => {
 
 const handleShowPassword = () => {
   showPassword.value = !showPassword.value;
-  setTimeout(() => {
-    showPassword.value = false;
-  }, 5000);
+  if (showPassword.value) {
+    if (showPasswordTimeout) clearTimeout(showPasswordTimeout);
+    showPasswordTimeout = setTimeout(() => {
+      showPassword.value = false;
+    }, 5000);
+  }
 };
 
-const handleEdit = async () => {
-  const response = await fetch(`${serverURL}/api/vault/edit`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(entry),
-  });
+const handleEdit = () => {
+  editing.value = true;
+  changedValues.value = false;
+};
+
+const submitEdit = async () => {
+  if (!changedValues.value) {
+    editing.value = false;
+    return;
+  }
+  const response = await Edit(
+    entry.id,
+    password.value,
+    entry.username,
+    entry.name
+  );
+  editing.value = false;
 };
 
 const handleDelete = async () => {
@@ -48,20 +64,44 @@ const handleDelete = async () => {
     alert("Failed to delete entry");
   }
 };
+
+function closeModal() {
+  if (modal.value) modal.value.classList.remove("is-active");
+}
 </script>
 
 <template>
   <div class="vaultEntry">
     <div class="vaultEntryHeader">
-      <h1 class="title">{{ entry.name }}</h1>
+      <h1 v-if="!editing" class="title">{{ entry.name }}</h1>
+      <input
+        v-else
+        class="input"
+        type="text"
+        v-model="entry.name"
+        :placeholder="entry.name"
+        v-on:change="changedValues = true"
+      />
       <button
         class="delete button js-modal-trigger"
-        data-target="confirm-delete-entry-modal"
+        :data-target="'confirm-delete-entry-modal' + entry.id"
       ></button>
-      <button class="button is-primary" @click="handleEdit">Edit</button>
+      <button v-if="!editing" class="button is-primary" @click="handleEdit">
+        Edit
+      </button>
+      <button v-else class="button is-primary" @click="submitEdit">Save</button>
     </div>
     <div class="vaultEntryUsername">
-      <p>{{ entry.username }}</p>
+      <p v-if="!editing">{{ entry.username }}</p>
+      <p v-else>
+        <input
+          class="input"
+          type="text"
+          v-model="entry.username"
+          :placeholder="entry.username"
+          v-on:change="changedValues = true"
+        />
+      </p>
     </div>
     <div class="vaultEntryPassword">
       <button class="button is-primary" @click="handleShowPassword">
@@ -75,18 +115,38 @@ const handleDelete = async () => {
         Copy Password
       </button>
       <button v-else class="button is-success">Copied!</button>
-      <p v-if="showPassword">{{ password }}</p>
+      <p v-if="showPassword && !editing">{{ password }}</p>
+      <input
+        v-else-if="!showPassword && editing"
+        class="input"
+        type="password"
+        v-model="password"
+        :placeholder="password"
+        v-on:change="changedValues = true"
+      />
+      <input
+        v-else-if="showPassword && editing"
+        class="input"
+        type="text"
+        v-model="password"
+        :placeholder="password"
+        v-on:change="changedValues = true"
+      />
       <p v-else>
         <span v-for="i in password.length">*</span>
       </p>
     </div>
-    <div class="modal" id="confirm-delete-entry-modal">
+    <div
+      class="modal"
+      :id="'confirm-delete-entry-modal' + entry.id"
+      ref="modal"
+    >
       <div class="modal-background"></div>
       <div class="modal-content">
         <div class="box">
           <p>Are you sure you want to delete this entry?</p>
           <button class="button is-danger" @click="handleDelete">Delete</button>
-          <button class="button">Cancel</button>
+          <button class="button" @click="closeModal()">Cancel</button>
         </div>
       </div>
     </div>
