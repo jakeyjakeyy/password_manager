@@ -193,7 +193,7 @@ class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
         user = self.user
 
         # TODO Remove before prodiction
-        # debug: Skip 2FA check
+        # debug: Returning here to skip 2FA check
         return data
 
         # Get the 2FA token from the request

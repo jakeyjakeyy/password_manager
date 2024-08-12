@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth import get_user_model
 from django_otp.models import Device
+from encrypted_model_fields.fields import EncryptedCharField
 import os
 
 User = get_user_model()
@@ -13,9 +14,7 @@ def generate_salt():
 
 class ClientKeyDerivationSalt(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="salt")
-    salt = models.CharField(
-        max_length=64, default=generate_salt
-    )  # Note the absence of parentheses
+    salt = models.CharField(max_length=64, default=generate_salt)
 
     def __str__(self):
         return self.user.username
@@ -34,4 +33,4 @@ class VaultEntry(models.Model):
 
 class TOTPDevice(Device):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    secret = models.CharField(max_length=255, null=False)
+    secret = EncryptedCharField(max_length=255, null=False)
