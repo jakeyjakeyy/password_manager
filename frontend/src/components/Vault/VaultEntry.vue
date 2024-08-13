@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import { decryptPassword } from "@/utils/Cryptography";
 import { Edit, Delete, Retrieve } from "@/utils/VaultEntry";
+import { checkToken } from "@/utils/RefreshToken";
 const { entry, updateEntries } = defineProps(["entry", "updateEntries"]);
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 const showPassword = ref(false);
@@ -36,6 +37,10 @@ const handleShowPassword = () => {
 };
 
 const handleEdit = () => {
+  if (!checkToken()) {
+    alert("Session expired. Please log in again.");
+    window.location.href = "/";
+  }
   editing.value = true;
   changedValues.value = false;
 };

@@ -1,4 +1,5 @@
 import { useCookies } from "vue3-cookies";
+import { jwtDecode } from "jwt-decode";
 const { cookies } = useCookies();
 
 async function RefreshToken() {
@@ -32,12 +33,22 @@ async function RefreshToken() {
   }
 }
 
-function checkLogin() {
-  const access = cookies.get("access_token");
-  if (!access) {
+function checkToken() {
+  const refresh = cookies.get("access_token");
+  if (!refresh) return false;
+  const refreshDecoded = jwtDecode(refresh);
+  const currentTime = Date.now() / 1000;
+  if (refreshDecoded.exp && refreshDecoded.exp < currentTime) {
+    deleteTokens();
     return false;
   }
   return true;
 }
 
-export { RefreshToken, checkLogin };
+function deleteTokens() {
+  cookies.remove("refresh_token");
+  cookies.remove("access_token");
+  cookies.remove("salt");
+}
+
+export { RefreshToken, checkToken, deleteTokens };

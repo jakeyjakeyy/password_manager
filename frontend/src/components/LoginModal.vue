@@ -70,11 +70,8 @@ async function handleLogin() {
     return;
   }
 
-  // 30 minute expiry
-  const time = new Date();
-  const expiry = new Date(time.getTime() + 30 * 60000);
-  cookies.set("access_token", data.access, expiry);
-  cookies.set("refresh_token", data.refresh, expiry);
+  cookies.set("refresh_token", data.refresh);
+  cookies.set("access_token", data.access);
   loggedin.value = true;
   username.value = "";
   password.value = "";

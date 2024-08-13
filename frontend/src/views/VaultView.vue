@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { checkLogin } from "@/utils/RefreshToken";
+import { checkToken } from "@/utils/RefreshToken";
 import { useRouter } from "vue-router";
 import { ref, onMounted, watch } from "vue";
 import { Retrieve } from "@/utils/VaultEntry";
@@ -32,8 +32,8 @@ const sortBy = ref("name");
 let fuse: any;
 
 onMounted(async () => {
-  if (!checkLogin()) {
-    router.push("/");
+  if (!checkToken()) {
+    window.location.href = "/";
   } else {
     vaultEntries.value = await Retrieve();
     fuse = new Fuse(vaultEntries.value, fuseOptions);
