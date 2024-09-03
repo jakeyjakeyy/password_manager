@@ -15,4 +15,5 @@ urlpatterns = [
     path("vault/retrieve", VaultRetrieve.as_view(), name="vault-retrieve"),
     path("vault/delete", VaultDelete.as_view(), name="vault-delete"),
     path("vault/edit", VaultEdit.as_view(), name="vault-edit"),
+    path("vault/files/add", FileAdd.as_view(), name="file-add"),
 ]

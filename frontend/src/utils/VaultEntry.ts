@@ -53,8 +53,25 @@ async function AddBatch(entries: any) {
   return response.json();
 }
 
-async function AddFile(file: File, name: string, entry: number) {
-  const encryptedFile = await Cryptography.encryptFile(file);
+async function AddFile(
+  encryptedFile: Uint8Array,
+  iv: any,
+  name: string,
+  entry: string
+) {
+  const res = await fetch(`${serverURL}/api/vault/files/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${cookies.get("access_token")}`,
+    },
+    body: JSON.stringify({
+      id: entry,
+      file: encryptedFile,
+      iv: iv,
+      name: name,
+    }),
+  });
 }
 
 async function Delete(id: string) {

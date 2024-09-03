@@ -40,7 +40,7 @@ class fileEntry(models.Model):
     VaultEntry = models.ForeignKey(
         VaultEntry, on_delete=models.CASCADE, related_name="files"
     )
-    file = models.FileField(upload_to="files/")
+    file = models.CharField(null=False)
     name = models.CharField(max_length=255, null=False)
     iv = models.CharField(max_length=255, null=False)
 

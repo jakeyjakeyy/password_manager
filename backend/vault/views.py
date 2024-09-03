@@ -230,7 +230,7 @@ def ToBytes(input):
     return bytes([input[str(k)] for k in sorted(input.keys(), key=int)])
 
 
-class FileUpload(APIView):
+class FileAdd(APIView):
     authentication_classes = [JWTAuthentication]
 
     def post(self, request):
@@ -238,8 +238,15 @@ class FileUpload(APIView):
             entry = models.VaultEntry.objects.get(id=request.data["id"])
             if entry.user != request.user:
                 return Response({"message": "Unauthorized"}, status=401)
+            fileBytes = ToBytes(request.data["file"])
+            ivBytes = ToBytes(request.data["iv"])
+            logger.info(f"File bytes: {fileBytes.hex()}")
+            logger.info(f"IV bytes: {ivBytes.hex()}")
             file = models.fileEntry.objects.create(
-                VaultEntry=entry, file=request.FILES["file"], name=request.data["name"]
+                VaultEntry=entry,
+                file=fileBytes.hex(),
+                name=request.data["name"],
+                iv=ivBytes.hex(),
             )
             file.save()
             return Response({"message": "File uploaded"}, status=200)

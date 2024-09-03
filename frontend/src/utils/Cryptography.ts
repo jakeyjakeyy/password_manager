@@ -117,9 +117,7 @@ async function encryptFile(file: File) {
     key,
     await file.arrayBuffer()
   );
-  const encryptedFile = new Blob([new Uint8Array(encrypted)], {
-    type: file.type,
-  });
+  const encryptedFile = new Uint8Array(encrypted);
 
   return {
     encryptedFile: encryptedFile,
@@ -127,7 +125,7 @@ async function encryptFile(file: File) {
   };
 }
 
-async function decryptFile(file: Blob, iv: Uint8Array, name: string) {
+async function decryptFile(file: Uint8Array, iv: Uint8Array, name: string) {
   const key = await retrieveKey();
   const ivBuffer = objectToUint8Array(iv);
   const decrypted = await window.crypto.subtle.decrypt(
@@ -136,16 +134,10 @@ async function decryptFile(file: Blob, iv: Uint8Array, name: string) {
       iv: ivBuffer,
     },
     key,
-    await file.arrayBuffer()
+    file
   );
-  // let decryptedFile = new Blob([new Uint8Array(decrypted)], {
-  //   type: file.type,
-  // });
 
-  // blob to file
-  const decryptedFile = new File([new Uint8Array(decrypted)], name, {
-    type: file.type,
-  });
+  const decryptedFile = new File([new Uint8Array(decrypted)], name);
 
   return decryptedFile;
 }

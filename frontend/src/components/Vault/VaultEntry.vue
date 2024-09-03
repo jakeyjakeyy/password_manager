@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { decryptPassword } from "@/utils/Cryptography";
-import { Edit, Delete, Retrieve } from "@/utils/VaultEntry";
+import {
+  decryptPassword,
+  decryptFile,
+  encryptFile,
+} from "@/utils/Cryptography";
+import { Edit, Delete, Retrieve, AddFile } from "@/utils/VaultEntry";
 import { checkToken } from "@/utils/RefreshToken";
 const { entry, updateEntries } = defineProps(["entry", "updateEntries"]);
 const serverURL = import.meta.env.VITE_BACKEND_URL;
@@ -11,10 +15,19 @@ const copiedConfirmation = ref(false);
 const modal = ref<HTMLElement | null>(null);
 const editing = ref(false);
 const changedValues = ref(false);
+const files = ref<File[]>([]);
 let showPasswordTimeout: any = null;
 
 onMounted(async () => {
   password.value = await decryptPassword(entry.password, entry.iv);
+  for (const file of entry.files) {
+    const decryptedFile = await decryptFile(
+      file.encryptedFile,
+      file.iv,
+      file.name
+    );
+    files.value.push(decryptedFile);
+  }
 });
 
 const copyPassword = () => {
@@ -73,6 +86,30 @@ const handleDelete = async () => {
 function closeModal() {
   if (modal.value) modal.value.classList.remove("is-active");
 }
+
+const uploadFile = async () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".txt";
+  input.onchange = async (e: any) => {
+    const file = e.target.files[0];
+    const encryptedFile = await encryptFile(file);
+    const decryptedFile = await decryptFile(
+      encryptedFile.encryptedFile,
+      encryptedFile.iv,
+      file.name
+    );
+    files.value.push(decryptedFile);
+    console.log(encryptedFile.encryptedFile);
+    await AddFile(
+      encryptedFile.encryptedFile,
+      encryptedFile.iv,
+      file.name,
+      entry.id
+    );
+  };
+  input.click();
+};
 </script>
 
 <template>
@@ -142,7 +179,10 @@ function closeModal() {
       </p>
     </div>
     <div class="vaultEntryFiles">
-      <button class="button is-primary">Files</button>
+      <button class="button is-primary" @click="uploadFile">Add Files</button>
+      <div v-for="file in files" class="vaultEntryFile">
+        <p>{{ file.name }}</p>
+      </div>
     </div>
     <div
       class="modal"
