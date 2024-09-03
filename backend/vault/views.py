@@ -228,3 +228,20 @@ class TokenObtainPairViewWith2FA(TokenObtainPairView):
 
 def ToBytes(input):
     return bytes([input[str(k)] for k in sorted(input.keys(), key=int)])
+
+
+class FileUpload(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        try:
+            entry = models.VaultEntry.objects.get(id=request.data["id"])
+            if entry.user != request.user:
+                return Response({"message": "Unauthorized"}, status=401)
+            file = models.fileEntry.objects.create(
+                VaultEntry=entry, file=request.FILES["file"], name=request.data["name"]
+            )
+            file.save()
+            return Response({"message": "File uploaded"}, status=200)
+        except Exception as e:
+            return Response({"message": "Failed to upload file"}, status=400)

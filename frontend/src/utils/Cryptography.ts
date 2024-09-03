@@ -106,6 +106,50 @@ function objectToUint8Array(obj: any) {
   return arr;
 }
 
+async function encryptFile(file: File) {
+  const key = await retrieveKey();
+  const iv = window.crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await window.crypto.subtle.encrypt(
+    {
+      name: "AES-GCM",
+      iv: iv,
+    },
+    key,
+    await file.arrayBuffer()
+  );
+  const encryptedFile = new Blob([new Uint8Array(encrypted)], {
+    type: file.type,
+  });
+
+  return {
+    encryptedFile: encryptedFile,
+    iv: iv,
+  };
+}
+
+async function decryptFile(file: Blob, iv: Uint8Array, name: string) {
+  const key = await retrieveKey();
+  const ivBuffer = objectToUint8Array(iv);
+  const decrypted = await window.crypto.subtle.decrypt(
+    {
+      name: "AES-GCM",
+      iv: ivBuffer,
+    },
+    key,
+    await file.arrayBuffer()
+  );
+  // let decryptedFile = new Blob([new Uint8Array(decrypted)], {
+  //   type: file.type,
+  // });
+
+  // blob to file
+  const decryptedFile = new File([new Uint8Array(decrypted)], name, {
+    type: file.type,
+  });
+
+  return decryptedFile;
+}
+
 export {
   deriveKey,
   storeKey,
@@ -113,4 +157,6 @@ export {
   retrieveKey,
   encryptPassword,
   decryptPassword,
+  encryptFile,
+  decryptFile,
 };

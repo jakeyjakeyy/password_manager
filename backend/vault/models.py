@@ -42,6 +42,7 @@ class fileEntry(models.Model):
     )
     file = models.FileField(upload_to="files/")
     name = models.CharField(max_length=255, null=False)
+    iv = models.CharField(max_length=255, null=False)
 
     def __str__(self):
         return "{}: {}".format(self.VaultEntry.user.username, self.name)

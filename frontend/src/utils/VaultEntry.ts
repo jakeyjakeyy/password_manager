@@ -53,6 +53,10 @@ async function AddBatch(entries: any) {
   return response.json();
 }
 
+async function AddFile(file: File, name: string, entry: number) {
+  const encryptedFile = await Cryptography.encryptFile(file);
+}
+
 async function Delete(id: string) {
   const response: any = await fetch(`${serverURL}/api/vault/delete`, {
     method: "POST",
@@ -126,4 +130,4 @@ async function Retrieve() {
   }
   return response.json();
 }
-export { Add, AddBatch, Edit, Delete, Retrieve };
+export { Add, AddBatch, Edit, Delete, Retrieve, AddFile };

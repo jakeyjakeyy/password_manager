@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Add, Retrieve } from "@/utils/VaultEntry";
+import { encryptFile, decryptFile } from "@/utils/Cryptography";
 const { updateEntries } = defineProps(["updateEntries"]);
 const username = ref("");
 const password = ref("");
@@ -32,6 +33,19 @@ const generatePassword = () => {
     const charIndex = Math.floor(Math.random() * charset[index].length);
     password.value += charset[index][charIndex];
   }
+};
+
+const onFileChange = async (e: any) => {
+  console.log(e.target.files[0]);
+  const file = e.target.files[0];
+  const encryptedFile = await encryptFile(file);
+  console.log(encryptedFile);
+  const decryptedFile = await decryptFile(
+    encryptedFile.encryptedFile,
+    encryptedFile.iv,
+    file.name
+  );
+  console.log(decryptedFile);
 };
 </script>
 
@@ -100,6 +114,18 @@ const generatePassword = () => {
               :type="hidden ? 'password' : 'text'"
               placeholder="Password"
             />
+          </div>
+          <div class="fileUpload">
+            <label class="file-label">
+              <input
+                class="file-input"
+                type="file"
+                v-on:change="onFileChange"
+              />
+              <span class="file-cta">
+                <span class="file-label">Choose a file…</span>
+              </span>
+            </label>
           </div>
         </div>
         <button class="button is-primary is-fullwidth" @click="handleClick">
