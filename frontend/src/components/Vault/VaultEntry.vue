@@ -141,6 +141,9 @@ function closeModal() {
         <span v-for="i in password.length">*</span>
       </p>
     </div>
+    <div class="vaultEntryFiles">
+      <button class="button is-primary">Files</button>
+    </div>
     <div
       class="modal"
       :id="'confirm-delete-entry-modal' + entry.id"

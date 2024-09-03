@@ -172,6 +172,10 @@ class VaultRetrieve(APIView):
                         "password": password,
                         "iv": iv,
                         "id": entry.id,
+                        "files": [
+                            {"name": file.name, "id": file.id}
+                            for file in entry.files.all()
+                        ],
                     }
                 )
             return Response(response, status=200)

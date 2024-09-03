@@ -34,3 +34,14 @@ class VaultEntry(models.Model):
 class TOTPDevice(Device):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     secret = EncryptedCharField(max_length=255, null=False)
+
+
+class fileEntry(models.Model):
+    VaultEntry = models.ForeignKey(
+        VaultEntry, on_delete=models.CASCADE, related_name="files"
+    )
+    file = models.FileField(upload_to="files/")
+    name = models.CharField(max_length=255, null=False)
+
+    def __str__(self):
+        return "{}: {}".format(self.VaultEntry.user.username, self.name)

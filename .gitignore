@@ -2,3 +2,4 @@ __pycache__/
 .env
 vault.log
 venv/
+backend/files/
