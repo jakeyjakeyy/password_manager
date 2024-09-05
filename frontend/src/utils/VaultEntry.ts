@@ -78,8 +78,10 @@ async function AddFile(
     if (refresh.error) {
       return AddFile(encryptedFile, iv, name, entry);
     } else {
-      alert("Log in again");
+      return { error: "Log in again" };
     }
+  } else if (res.status == 413) {
+    return { error: true, message: "Content Too Large" };
   }
   return res.json();
 }

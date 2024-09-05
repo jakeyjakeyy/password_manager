@@ -97,7 +97,10 @@ const uploadFile = async () => {
       file.name,
       entry.id
     );
-    if (!res) alert("Failed to upload file");
+    if (res.error) {
+      alert(res.message);
+      return;
+    }
     const decryptedFile = await decryptFile(
       encryptedFile.encryptedFile,
       encryptedFile.iv,

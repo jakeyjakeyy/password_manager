@@ -253,6 +253,9 @@ class FileAdd(APIView):
             if entry.user != request.user:
                 return Response({"message": "Unauthorized"}, status=401)
             fileBytes = ToBytes(request.data["file"])
+            # make sure fize size below 5MB
+            if len(fileBytes) > 5 * 1024 * 1024:
+                return Response({"message": "Content Too Large"}, status=413)
             ivBytes = ToBytes(request.data["iv"])
             file = models.fileEntry.objects.create(
                 VaultEntry=entry,
