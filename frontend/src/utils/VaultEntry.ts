@@ -25,7 +25,7 @@ async function Add(password: string, username: string, name: string) {
   });
   if (response.status === 401) {
     const refresh = await RefreshToken();
-    if (refresh) {
+    if (refresh.error) {
       return Add(password, username, name);
     } else {
       alert("Log in again");
@@ -45,7 +45,7 @@ async function AddBatch(entries: any) {
   });
   if (response.status === 401) {
     const refresh = await RefreshToken();
-    if (refresh) {
+    if (refresh.error) {
       return AddBatch(entries);
     } else {
       alert("Log in again");
@@ -75,7 +75,7 @@ async function AddFile(
   });
   if (res.status === 401) {
     const refresh = await RefreshToken();
-    if (refresh) {
+    if (refresh.error) {
       return AddFile(encryptedFile, iv, name, entry);
     } else {
       alert("Log in again");
@@ -95,7 +95,7 @@ async function DeleteFile(id: number) {
   });
   if (response.status === 401) {
     const refresh = await RefreshToken();
-    if (refresh) {
+    if (refresh.error) {
       return DeleteFile(id);
     } else {
       alert("Log in again");
@@ -115,7 +115,7 @@ async function Delete(id: string) {
   });
   if (response.status === 401) {
     const refresh = await RefreshToken();
-    if (refresh) {
+    if (refresh.error) {
       return Delete(id);
     } else {
       alert("Log in again");
@@ -151,7 +151,7 @@ async function Edit(
   });
   if (response.status === 401) {
     const refresh = await RefreshToken();
-    if (refresh) {
+    if (refresh.error) {
       return Edit(id, password, username, name);
     } else {
       alert("Log in again");
@@ -169,7 +169,7 @@ async function Retrieve() {
   });
   if (response.status === 401) {
     const refresh = await RefreshToken();
-    if (refresh) {
+    if (refresh.error) {
       return Retrieve();
     } else {
       alert("Log in again");

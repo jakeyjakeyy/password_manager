@@ -249,9 +249,7 @@ class FileAdd(APIView):
 
     def post(self, request):
         try:
-            logger.info(f"fileadd")
             entry = models.VaultEntry.objects.get(id=request.data["id"])
-            logger.info(f"entry: {entry}")
             if entry.user != request.user:
                 return Response({"message": "Unauthorized"}, status=401)
             fileBytes = ToBytes(request.data["file"])

@@ -19,17 +19,18 @@ async function RefreshToken() {
     if (data.detail === "Token is invalid or expired") {
       cookies.remove("refresh_token");
       cookies.remove("access_token");
-      return { message: "Expired token" };
+      return { message: "Expired token", error: true };
     }
 
     if (data.access) {
       cookies.set("access_token", data.access);
-      return { message: "Token refreshed" };
+      return { message: "Token refreshed", error: false };
     } else {
-      return { message: "Please log in again" };
+      return { message: "Please log in again", error: true };
     }
   } catch (err) {
     console.log(err);
+    return { message: "Error", error: true };
   }
 }
 
