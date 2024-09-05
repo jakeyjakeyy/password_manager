@@ -179,6 +179,7 @@ class VaultRetrieve(APIView):
                             "file": {
                                 str(index): byte for index, byte in enumerate(fileBytes)
                             },
+                            "id": file.id,
                         }
                     )
                 response.append(
@@ -260,6 +261,20 @@ class FileAdd(APIView):
                 iv=ivBytes.hex(),
             )
             file.save()
-            return Response({"message": "File uploaded"}, status=200)
+            return Response({"message": "File uploaded", "id": file.id}, status=200)
         except Exception as e:
             return Response({"message": "Failed to upload file"}, status=400)
+
+
+class FileDelete(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        try:
+            file = models.fileEntry.objects.get(id=request.data["id"])
+            if file.VaultEntry.user != request.user:
+                return Response({"message": "Unauthorized"}, status=401)
+            file.delete()
+            return Response({"message": "File deleted"}, status=200)
+        except Exception as e:
+            return Response({"message": "Failed to delete file"}, status=400)

@@ -72,6 +72,35 @@ async function AddFile(
       name: name,
     }),
   });
+  if (res.status === 401) {
+    const refresh = await RefreshToken();
+    if (refresh) {
+      return AddFile(encryptedFile, iv, name, entry);
+    } else {
+      alert("Log in again");
+    }
+  }
+  return res.json();
+}
+
+async function DeleteFile(id: number) {
+  const response: any = await fetch(`${serverURL}/api/vault/files/delete`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${cookies.get("access_token")}`,
+    },
+    body: JSON.stringify({ id: id }),
+  });
+  if (response.status === 401) {
+    const refresh = await RefreshToken();
+    if (refresh) {
+      return DeleteFile(id);
+    } else {
+      alert("Log in again");
+    }
+  }
+  return response.json();
 }
 
 async function Delete(id: string) {
@@ -147,4 +176,4 @@ async function Retrieve() {
   }
   return response.json();
 }
-export { Add, AddBatch, Edit, Delete, Retrieve, AddFile };
+export { Add, AddBatch, Edit, Delete, Retrieve, AddFile, DeleteFile };

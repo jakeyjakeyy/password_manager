@@ -5,25 +5,25 @@ import {
   decryptFile,
   encryptFile,
 } from "@/utils/Cryptography";
-import { Edit, Delete, Retrieve, AddFile } from "@/utils/VaultEntry";
+import { Edit, Delete, AddFile, DeleteFile } from "@/utils/VaultEntry";
 import { checkToken } from "@/utils/RefreshToken";
 const { entry, updateEntries } = defineProps(["entry", "updateEntries"]);
-const serverURL = import.meta.env.VITE_BACKEND_URL;
 const showPassword = ref(false);
 const password = ref("");
 const copiedConfirmation = ref(false);
 const modal = ref<HTMLElement | null>(null);
 const editing = ref(false);
 const changedValues = ref(false);
-const files = ref<File[]>([]);
+const files = ref<{ file: File; url: string; id: number }[]>([]);
 let showPasswordTimeout: any = null;
 
 onMounted(async () => {
   password.value = await decryptPassword(entry.password, entry.iv);
   for (const file of entry.files) {
-    console.log(file.file);
     const decryptedFile = await decryptFile(file.file, file.iv, file.name);
-    files.value.push(decryptedFile);
+    const url = URL.createObjectURL(decryptedFile);
+    let fileObj = { file: decryptedFile, url: url, id: file.id };
+    files.value.push(fileObj);
   }
 });
 
@@ -87,24 +87,37 @@ function closeModal() {
 const uploadFile = async () => {
   const input = document.createElement("input");
   input.type = "file";
-  input.accept = ".txt";
+  input.accept = ".txt, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx";
   input.onchange = async (e: any) => {
     const file = e.target.files[0];
     const encryptedFile = await encryptFile(file);
-    const decryptedFile = await decryptFile(
-      encryptedFile.encryptedFile,
-      encryptedFile.iv,
-      file.name
-    );
-    files.value.push(decryptedFile);
-    await AddFile(
+    const res = await AddFile(
       encryptedFile.encryptedFile,
       encryptedFile.iv,
       file.name,
       entry.id
     );
+    if (!res) alert("Failed to upload file");
+    const decryptedFile = await decryptFile(
+      encryptedFile.encryptedFile,
+      encryptedFile.iv,
+      file.name
+    );
+    const url = URL.createObjectURL(decryptedFile);
+    let fileObj = { file: decryptedFile, url: url, id: res.id };
+    files.value.push(fileObj);
   };
   input.click();
+};
+
+const handleDeleteFile = async (id: number) => {
+  const response = await DeleteFile(id);
+  if (response) {
+    console.log("Deleted file");
+    files.value = files.value.filter((file) => file.id !== id);
+  } else {
+    alert("Failed to delete file");
+  }
 };
 </script>
 
@@ -177,7 +190,15 @@ const uploadFile = async () => {
     <div class="vaultEntryFiles">
       <button class="button is-primary" @click="uploadFile">Add Files</button>
       <div v-for="file in files" class="vaultEntryFile">
-        <p>{{ file.name }}</p>
+        <p>{{ file.file.name }}</p>
+        <div class="buttons are-small">
+          <button class="button is-danger" @click="handleDeleteFile(file.id)">
+            Delete
+          </button>
+          <a :href="file.url" download>
+            <button class="button is-primary">Download</button>
+          </a>
+        </div>
       </div>
     </div>
     <div
@@ -201,5 +222,10 @@ const uploadFile = async () => {
 .vaultEntryHeader {
   display: flex;
   flex-direction: row;
+}
+.vaultEntryFile {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 </style>
