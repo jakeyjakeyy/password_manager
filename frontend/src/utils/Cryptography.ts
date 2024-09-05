@@ -125,7 +125,8 @@ async function encryptFile(file: File) {
   };
 }
 
-async function decryptFile(file: Uint8Array, iv: Uint8Array, name: string) {
+async function decryptFile(fileStr: string, iv: string, name: string) {
+  let file = objectToUint8Array(fileStr);
   const key = await retrieveKey();
   const ivBuffer = objectToUint8Array(iv);
   const decrypted = await window.crypto.subtle.decrypt(
@@ -138,6 +139,7 @@ async function decryptFile(file: Uint8Array, iv: Uint8Array, name: string) {
   );
 
   const decryptedFile = new File([new Uint8Array(decrypted)], name);
+  console.log(decryptedFile);
 
   return decryptedFile;
 }

@@ -21,11 +21,8 @@ let showPasswordTimeout: any = null;
 onMounted(async () => {
   password.value = await decryptPassword(entry.password, entry.iv);
   for (const file of entry.files) {
-    const decryptedFile = await decryptFile(
-      file.encryptedFile,
-      file.iv,
-      file.name
-    );
+    console.log(file.file);
+    const decryptedFile = await decryptFile(file.file, file.iv, file.name);
     files.value.push(decryptedFile);
   }
 });
@@ -100,7 +97,6 @@ const uploadFile = async () => {
       file.name
     );
     files.value.push(decryptedFile);
-    console.log(encryptedFile.encryptedFile);
     await AddFile(
       encryptedFile.encryptedFile,
       encryptedFile.iv,

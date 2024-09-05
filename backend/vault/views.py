@@ -165,6 +165,22 @@ class VaultRetrieve(APIView):
 
                 iv_bytes = bytes.fromhex(entry.iv)
                 iv = {str(index): byte for index, byte in enumerate(iv_bytes)}
+
+                files = []
+                for file in entry.files.all():
+                    fileBytes = bytes.fromhex(file.file)
+                    ivBytes = bytes.fromhex(file.iv)
+                    files.append(
+                        {
+                            "name": file.name,
+                            "iv": {
+                                str(index): byte for index, byte in enumerate(ivBytes)
+                            },
+                            "file": {
+                                str(index): byte for index, byte in enumerate(fileBytes)
+                            },
+                        }
+                    )
                 response.append(
                     {
                         "name": entry.name,
@@ -172,10 +188,7 @@ class VaultRetrieve(APIView):
                         "password": password,
                         "iv": iv,
                         "id": entry.id,
-                        "files": [
-                            {"name": file.name, "id": file.id}
-                            for file in entry.files.all()
-                        ],
+                        "files": files,
                     }
                 )
             return Response(response, status=200)
@@ -240,8 +253,6 @@ class FileAdd(APIView):
                 return Response({"message": "Unauthorized"}, status=401)
             fileBytes = ToBytes(request.data["file"])
             ivBytes = ToBytes(request.data["iv"])
-            logger.info(f"File bytes: {fileBytes.hex()}")
-            logger.info(f"IV bytes: {ivBytes.hex()}")
             file = models.fileEntry.objects.create(
                 VaultEntry=entry,
                 file=fileBytes.hex(),
