@@ -31,6 +31,7 @@ async function Add(password: string, username: string, name: string) {
       alert("Log in again");
     }
   }
+  return response.json();
 }
 
 async function AddBatch(entries: any) {
@@ -57,7 +58,7 @@ async function AddFile(
   encryptedFile: Uint8Array,
   iv: any,
   name: string,
-  entry: string
+  entry: number
 ) {
   const res = await fetch(`${serverURL}/api/vault/files/add`, {
     method: "POST",

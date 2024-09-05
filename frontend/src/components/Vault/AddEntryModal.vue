@@ -1,15 +1,27 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { Add, Retrieve } from "@/utils/VaultEntry";
+import { Add, AddFile } from "@/utils/VaultEntry";
 import { encryptFile, decryptFile } from "@/utils/Cryptography";
 const { updateEntries } = defineProps(["updateEntries"]);
 const username = ref("");
 const password = ref("");
 const name = ref("");
 const hidden = ref(true);
+const files = ref<File[]>([]);
 
 const handleClick = async () => {
   const add = await Add(password.value, username.value, name.value);
+  if (add) {
+    for (const file of files.value) {
+      const encryptedFile = await encryptFile(file);
+      await AddFile(
+        encryptedFile.encryptedFile,
+        encryptedFile.iv,
+        file.name,
+        add.id
+      );
+    }
+  }
   updateEntries();
   const modal = document.getElementById("add-entry-modal");
   if (modal) modal.classList.remove("is-active");
@@ -36,16 +48,15 @@ const generatePassword = () => {
 };
 
 const onFileChange = async (e: any) => {
-  console.log(e.target.files[0]);
   const file = e.target.files[0];
-  const encryptedFile = await encryptFile(file);
-  console.log(encryptedFile);
-  const decryptedFile = await decryptFile(
-    encryptedFile.encryptedFile,
-    encryptedFile.iv,
-    file.name
-  );
-  console.log(decryptedFile);
+  files.value.push(file);
+};
+
+const removeFile = (file: File) => {
+  const index = files.value.indexOf(file);
+  if (index > -1) {
+    files.value.splice(index, 1);
+  }
 };
 </script>
 
@@ -126,6 +137,12 @@ const onFileChange = async (e: any) => {
                 <span class="file-label">Choose a file…</span>
               </span>
             </label>
+            <div v-for="file in files" class="file">
+              <p>{{ file.name }}</p>
+              <button class="button is-danger" @click="removeFile(file)">
+                Delete
+              </button>
+            </div>
           </div>
         </div>
         <button class="button is-primary is-fullwidth" @click="handleClick">
@@ -135,3 +152,11 @@ const onFileChange = async (e: any) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.file {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>

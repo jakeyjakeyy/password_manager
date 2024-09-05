@@ -72,7 +72,7 @@ class VaultAdd(APIView):
             )
             logger.info("entry created")
             entry.save()
-            return Response({"message": "Entry created"}, status=200)
+            return Response({"message": "Entry created", "id": entry.id}, status=200)
         except Exception as e:
             logger.error(f"Entry creation failed: {str(e)}")
             return Response({"message": "Entry creation failed"}, status=400)
@@ -249,7 +249,9 @@ class FileAdd(APIView):
 
     def post(self, request):
         try:
+            logger.info(f"fileadd")
             entry = models.VaultEntry.objects.get(id=request.data["id"])
+            logger.info(f"entry: {entry}")
             if entry.user != request.user:
                 return Response({"message": "Unauthorized"}, status=401)
             fileBytes = ToBytes(request.data["file"])
