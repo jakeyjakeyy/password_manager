@@ -87,7 +87,6 @@ function closeModal() {
 const uploadFile = async () => {
   const input = document.createElement("input");
   input.type = "file";
-  input.accept = ".txt, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx";
   input.onchange = async (e: any) => {
     const file = e.target.files[0];
     const encryptedFile = await encryptFile(file);
