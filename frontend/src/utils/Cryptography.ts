@@ -1,6 +1,6 @@
 import { openDB } from "idb";
 
-function deriveKey(
+async function deriveKey(
   masterPassword: string,
   salt: string,
   iterations = 100000,
