@@ -34,17 +34,19 @@ const uppercase = ref(true);
 const lowercase = ref(true);
 
 const generatePassword = () => {
-  const charset = [];
-  if (numbers.value) charset.push("0123456789");
-  if (symbols.value) charset.push("!@#$%^&*()_+-=[]{}|;:,.<>/?");
-  if (uppercase.value) charset.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-  if (lowercase.value) charset.push("abcdefghijklmnopqrstuvwxyz");
-  password.value = "";
+  const charset = new Uint32Array(length.value);
+  self.crypto.getRandomValues(charset);
+  console.log(charset);
+  let charsetChars = "";
+  if (numbers.value) charsetChars += "0123456789";
+  if (symbols.value) charsetChars += "!@#$%^&*()_+";
+  if (uppercase.value) charsetChars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  if (lowercase.value) charsetChars += "abcdefghijklmnopqrstuvwxyz";
+  let password = "";
   for (let i = 0; i < length.value; i++) {
-    const index = Math.floor(Math.random() * charset.length);
-    const charIndex = Math.floor(Math.random() * charset[index].length);
-    password.value += charset[index][charIndex];
+    password += charsetChars.charAt(charset[i] % charsetChars.length);
   }
+  console.log(password);
 };
 
 const onFileChange = async (e: any) => {
