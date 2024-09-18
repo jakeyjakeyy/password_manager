@@ -36,17 +36,16 @@ const lowercase = ref(true);
 const generatePassword = () => {
   const charset = new Uint32Array(length.value);
   self.crypto.getRandomValues(charset);
-  console.log(charset);
   let charsetChars = "";
   if (numbers.value) charsetChars += "0123456789";
   if (symbols.value) charsetChars += "!@#$%^&*()_+";
   if (uppercase.value) charsetChars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   if (lowercase.value) charsetChars += "abcdefghijklmnopqrstuvwxyz";
-  let password = "";
+  let pwd = "";
   for (let i = 0; i < length.value; i++) {
-    password += charsetChars.charAt(charset[i] % charsetChars.length);
+    pwd += charsetChars.charAt(charset[i] % charsetChars.length);
   }
-  console.log(password);
+  password.value = pwd;
 };
 
 const onFileChange = async (e: any) => {
