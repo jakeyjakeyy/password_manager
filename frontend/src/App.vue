@@ -45,7 +45,13 @@ import LoginModal from "./components/LoginModal.vue";
     </div>
   </header>
 
-  <RouterView />
+  <div class="browser">
+    <RouterView />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.browser {
+  width: 100%;
+}
+</style>
