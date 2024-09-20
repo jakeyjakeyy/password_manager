@@ -1,5 +1,15 @@
 <script setup lang="ts">
-const { entry } = defineProps(["entry"]);
+import { onMounted } from "vue";
+
+const { entry, selectedEntry } = defineProps(["entry", "selectedEntry"]);
+let active = false;
+
+onMounted(() => {
+  console.log(selectedEntry);
+  if (selectedEntry && entry.id === selectedEntry.id) {
+    active = true;
+  }
+});
 </script>
 
 <template>
@@ -13,6 +23,9 @@ const { entry } = defineProps(["entry"]);
   display: flex;
   justify-content: center;
   padding: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  cursor: pointer;
 }
 
 .border {

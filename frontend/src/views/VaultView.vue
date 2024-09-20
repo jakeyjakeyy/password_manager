@@ -32,6 +32,8 @@ const searchList = ref([]);
 const sortBy = ref("name");
 let fuse: any;
 
+const selectedEntry = ref<VaultEntry | null>(null);
+
 onMounted(async () => {
   if (!checkToken()) {
     // Redirect to login if token is invalid
@@ -77,6 +79,8 @@ const updateEntries = async () => {
 
 const setSelection = (event: any) => {
   console.log("setSelection", event);
+  selectedEntry.value = event;
+  console.log("selectedEntry", selectedEntry.value);
 };
 </script>
 
@@ -126,12 +130,13 @@ const setSelection = (event: any) => {
           <VaultEntryList
             @set-selection="setSelection"
             :vaultEntries="vaultEntries"
+            :selectedEntry="selectedEntry"
           />
         </div>
       </div>
     </div>
-    <div class="vault-browser">
-      <p>hello</p>
+    <div v-if="selectedEntry" class="vault-browser">
+      <VaultEntry :entry="selectedEntry" :updateEntries="updateEntries" />
     </div>
   </div>
 </template>

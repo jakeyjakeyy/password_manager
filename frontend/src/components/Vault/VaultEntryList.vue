@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { onMounted } from "vue";
 import VaultEntryListItem from "./VaultEntryListItem.vue";
-const { vaultEntries } = defineProps(["vaultEntries"]);
+const { vaultEntries, selectedEntry } = defineProps([
+  "vaultEntries",
+  "selectedEntry",
+]);
 const emit = defineEmits(["updateEntries", "setSelection"]);
+let active = false;
 
 const setSelectionHandler = (entry: any) => {
   emit("setSelection", entry);
@@ -12,7 +17,11 @@ const setSelectionHandler = (entry: any) => {
   <!-- <button @click="setSelectionHandler">Set Selection</button> -->
   <div class="vault-entry-list">
     <div v-for="entry in vaultEntries" :key="entry.id">
-      <VaultEntryListItem :entry="entry" @click="setSelectionHandler(entry)" />
+      <VaultEntryListItem
+        :entry="entry"
+        @click="setSelectionHandler(entry)"
+        :selectedEntry="selectedEntry"
+      />
     </div>
   </div>
 </template>
