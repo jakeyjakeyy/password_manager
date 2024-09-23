@@ -78,9 +78,8 @@ const updateEntries = async () => {
 };
 
 const setSelection = (event: any) => {
-  console.log("setSelection", event);
-  selectedEntry.value = event;
-  console.log("selectedEntry", selectedEntry.value);
+  if (event) selectedEntry.value = event;
+  else selectedEntry.value = null;
 };
 </script>
 
@@ -153,7 +152,7 @@ const setSelection = (event: any) => {
 .vault-nav {
   display: flex;
   flex-direction: column;
-  width: 30%;
+  width: 30vw;
   height: 100%;
   padding: 1rem;
 }
@@ -162,5 +161,13 @@ const setSelection = (event: any) => {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+}
+
+.vault-browser {
+  display: flex;
+  flex-direction: column;
+  width: 70vw;
+  height: 100%;
+  padding: 1rem;
 }
 </style>

@@ -5,6 +5,7 @@ const { cookies } = useCookies();
 async function RefreshToken() {
   const serverURL = import.meta.env.VITE_BACKEND_URL;
   const refresh = cookies.get("refresh_token");
+  if (!refresh) return { message: "No token", error: true };
   try {
     const response = await fetch(`${serverURL}/api/token/refresh`, {
       method: "POST",

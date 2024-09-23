@@ -18,9 +18,17 @@ const setSelectionHandler = (entry: any) => {
   <div class="vault-entry-list">
     <div v-for="entry in vaultEntries" :key="entry.id">
       <VaultEntryListItem
+        v-if="entry !== selectedEntry"
         :entry="entry"
         @click="setSelectionHandler(entry)"
         :selectedEntry="selectedEntry"
+      />
+      <VaultEntryListItem
+        v-else
+        :entry="entry"
+        @click="setSelectionHandler(null)"
+        :selectedEntry="selectedEntry"
+        :active="true"
       />
     </div>
   </div>

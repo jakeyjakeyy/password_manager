@@ -118,10 +118,13 @@ async function Delete(id: string) {
   if (response.status === 401) {
     const refresh = await RefreshToken();
     if (refresh.error) {
-      return Delete(id);
-    } else {
       alert("Log in again");
+    } else {
+      return Delete(id);
     }
+  }
+  if (response.status === 400) {
+    return { error: true, message: "Could not delete entry" };
   }
   return response.json();
 }

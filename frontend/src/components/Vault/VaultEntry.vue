@@ -72,9 +72,13 @@ const submitEdit = async () => {
 const handleDelete = async () => {
   const response = await Delete(entry.id);
   console.log(response);
-  if (response) {
-    console.log("Deleted entry");
+  if (!response.error) {
+    if (response.code === "token_not_valid") {
+      alert("Session expired. Please log in again.");
+      window.location.href = "/";
+    }
     updateEntries();
+    closeModal();
   } else {
     alert("Failed to delete entry");
   }
@@ -135,10 +139,6 @@ const handleDeleteFile = async (id: number) => {
         :placeholder="entry.name"
         v-on:change="changedValues = true"
       />
-      <button
-        class="delete button js-modal-trigger"
-        :data-target="'confirm-delete-entry-modal' + entry.id"
-      ></button>
       <button v-if="!editing" class="button is-primary" @click="handleEdit">
         Edit
       </button>
@@ -202,6 +202,14 @@ const handleDeleteFile = async (id: number) => {
           </a>
         </div>
       </div>
+    </div>
+    <div class="vault-entry-delete">
+      <button
+        class="button is-danger js-modal-trigger"
+        :data-target="'confirm-delete-entry-modal' + entry.id"
+      >
+        Delete
+      </button>
     </div>
     <div
       class="modal"

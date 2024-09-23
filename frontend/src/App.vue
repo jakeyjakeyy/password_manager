@@ -53,5 +53,6 @@ import LoginModal from "./components/LoginModal.vue";
 <style scoped>
 .browser {
   width: 100%;
+  height: 100%;
 }
 </style>
