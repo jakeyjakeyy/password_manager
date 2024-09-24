@@ -149,8 +149,9 @@ const setSelection = (event: any) => {
   display: flex;
   flex-direction: row;
   align-items: start;
-  height: 100%;
+  height: 93vh;
   width: 100vw;
+  overflow: hidden;
 }
 
 .vault-nav {

@@ -57,6 +57,23 @@ async function Import() {
     <div class="modal-content">
       <div class="box">
         <h1 class="title">Import Entries</h1>
+        <h2>
+          <i
+            >Note: The only officially supported format is KeeperSecurity's JSON
+            export.</i
+          >
+          <br />
+          <i
+            >If you would like support for a different password manager or file
+            format, please open an
+            <a
+              href="https://github.com/jakeyjakeyy/password_manager/issues"
+              target="_blank"
+              >issue</a
+            >
+            on the GitHub repository</i
+          >
+        </h2>
         <div class="field">
           <label class="label">Entries</label>
           <div class="control">
