@@ -47,6 +47,8 @@ onMounted(async () => {
       if (button.id === "vaultRouterButton") button.classList.add("is-active");
       else button.classList.remove("is-active");
     });
+    // initialize list sorting
+    handleSort();
   }
 });
 
