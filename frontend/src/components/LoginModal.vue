@@ -126,7 +126,7 @@ const handleLogout = () => {
   cookies.remove("salt");
   loggedin.value = false;
   closeAllModals();
-  // window.location.reload();
+  window.location.href = "/";
 };
 
 const closeQR = () => {

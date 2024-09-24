@@ -7,6 +7,7 @@ import {
 } from "@/utils/Cryptography";
 import { Edit, Delete, AddFile, DeleteFile } from "@/utils/VaultEntry";
 import { checkToken } from "@/utils/RefreshToken";
+const emit = defineEmits(["unselect"]);
 const { entry, updateEntries } = defineProps(["entry", "updateEntries"]);
 const showPassword = ref(false);
 const password = ref("");
@@ -71,7 +72,6 @@ const submitEdit = async () => {
 
 const handleDelete = async () => {
   const response = await Delete(entry.id);
-  console.log(response);
   if (!response.error) {
     if (response.code === "token_not_valid") {
       alert("Session expired. Please log in again.");
@@ -79,6 +79,7 @@ const handleDelete = async () => {
     }
     updateEntries();
     closeModal();
+    emit("unselect");
   } else {
     alert("Failed to delete entry");
   }

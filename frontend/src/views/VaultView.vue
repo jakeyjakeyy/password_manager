@@ -139,7 +139,11 @@ const setSelection = (event: any) => {
       </div>
     </div>
     <div v-if="selectedEntry" class="vault-browser">
-      <VaultEntry :entry="selectedEntry" :updateEntries="updateEntries" />
+      <VaultEntry
+        :entry="selectedEntry"
+        :updateEntries="updateEntries"
+        @unselect="selectedEntry = null"
+      />
     </div>
   </div>
 </template>
