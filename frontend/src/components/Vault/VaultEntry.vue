@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import {
   decryptPassword,
   decryptFile,
@@ -119,7 +119,6 @@ const uploadFile = async () => {
 const handleDeleteFile = async (id: number) => {
   const response = await DeleteFile(id);
   if (response) {
-    console.log("Deleted file");
     files.value = files.value.filter((file) => file.id !== id);
   } else {
     alert("Failed to delete file");
@@ -129,81 +128,95 @@ const handleDeleteFile = async (id: number) => {
 
 <template>
   <div class="vaultEntry">
-    <div class="vaultEntryHeader">
-      <h1 v-if="!editing" class="title">{{ entry.name }}</h1>
-      <input
-        v-else
-        class="input"
-        type="text"
-        v-model="entry.name"
-        :placeholder="entry.name"
-        v-on:change="changedValues = true"
-      />
-      <button v-if="!editing" class="button is-primary" @click="handleEdit">
-        Edit
-      </button>
-      <button v-else class="button is-primary" @click="submitEdit">Save</button>
-    </div>
-    <div class="vaultEntryUsername">
-      <p v-if="!editing">{{ entry.username }}</p>
-      <p v-else>
+    <div class="vault-entry-content-container">
+      <div class="vaultEntryHeader">
+        <h1 v-if="!editing" class="title" @click="handleEdit">
+          {{ entry.name }}
+        </h1>
         <input
+          v-else
+          class="input"
+          type="text"
+          v-model="entry.name"
+          :placeholder="entry.name"
+          v-on:change="changedValues = true"
+        />
+      </div>
+      <div class="vaultEntryUsername">
+        <p v-if="!editing" @click="handleEdit">{{ entry.username }}</p>
+        <input
+          v-else
           class="input"
           type="text"
           v-model="entry.username"
           :placeholder="entry.username"
           v-on:change="changedValues = true"
         />
-      </p>
-    </div>
-    <div class="vaultEntryPassword">
-      <button class="button is-primary" @click="handleShowPassword">
-        {{ showPassword ? "Hide Password" : "Show Password" }}
-      </button>
-      <button
-        v-if="!copiedConfirmation"
-        class="button is-primary"
-        @click="copyPassword"
-      >
-        Copy Password
-      </button>
-      <button v-else class="button is-success">Copied!</button>
-      <p v-if="showPassword && !editing">{{ password }}</p>
-      <input
-        v-else-if="!showPassword && editing"
-        class="input"
-        type="password"
-        v-model="password"
-        :placeholder="password"
-        v-on:change="changedValues = true"
-      />
-      <input
-        v-else-if="showPassword && editing"
-        class="input"
-        type="text"
-        v-model="password"
-        :placeholder="password"
-        v-on:change="changedValues = true"
-      />
-      <p v-else>
-        <span v-for="i in password.length">*</span>
-      </p>
-    </div>
-    <div class="vaultEntryFiles">
-      <button class="button is-primary" @click="uploadFile">Add Files</button>
-      <div v-for="file in files" class="vaultEntryFile">
-        <p>{{ file.file.name }}</p>
-        <div class="buttons are-small">
-          <button class="button is-danger" @click="handleDeleteFile(file.id)">
-            Delete
-          </button>
-          <a :href="file.url" download>
-            <button class="button is-primary">Download</button>
-          </a>
+      </div>
+      <div class="vaultEntryPassword">
+        <button class="button is-primary" @click="handleShowPassword">
+          {{ showPassword ? "Hide Password" : "Show Password" }}
+        </button>
+        <button
+          v-if="!copiedConfirmation"
+          class="button is-primary"
+          @click="copyPassword"
+        >
+          Copy Password
+        </button>
+        <button v-else class="button is-success">Copied!</button>
+        <p v-if="showPassword && !editing">{{ password }}</p>
+        <input
+          v-else-if="!showPassword && editing"
+          class="input"
+          type="password"
+          v-model="password"
+          :placeholder="password"
+          v-on:change="changedValues = true"
+        />
+        <input
+          v-else-if="showPassword && editing"
+          class="input"
+          type="text"
+          v-model="password"
+          :placeholder="password"
+          v-on:change="changedValues = true"
+        />
+        <p v-else @click="handleEdit">
+          <span v-for="i in password.length">*</span>
+        </p>
+      </div>
+      <div class="vaultEntryFiles">
+        <button class="button is-primary" @click="uploadFile">Add Files</button>
+        <div v-for="file in files" class="vaultEntryFile">
+          <p>{{ file.file.name }}</p>
+          <div class="buttons are-small">
+            <button class="button is-danger" @click="handleDeleteFile(file.id)">
+              Delete
+            </button>
+            <a :href="file.url" download>
+              <button class="button is-primary">Download</button>
+            </a>
+          </div>
         </div>
       </div>
     </div>
-    <div class="vault-entry-delete">
+    <div class="vault-entry-post-controller">
+      <button
+        v-if="!editing || !changedValues"
+        class="button is-primary"
+        disabled
+        @click="submitEdit"
+      >
+        Save Changes
+      </button>
+      <button
+        v-if="editing && changedValues"
+        class="button is-primary"
+        @click="submitEdit"
+      >
+        Save Changes
+      </button>
       <button
         class="button is-danger js-modal-trigger"
         :data-target="'confirm-delete-entry-modal' + entry.id"
@@ -229,6 +242,13 @@ const handleDeleteFile = async (id: number) => {
 </template>
 
 <style scoped>
+.vaultEntry {
+  margin-top: 5rem;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 .vaultEntryHeader {
   display: flex;
   flex-direction: row;
@@ -237,5 +257,16 @@ const handleDeleteFile = async (id: number) => {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.vaultEntryHeader,
+.vaultEntryUsername,
+.vaultEntryPassword {
+  cursor: pointer;
+}
+
+.vault-entry-post-controller {
+  display: flex;
+  flex-direction: row;
 }
 </style>

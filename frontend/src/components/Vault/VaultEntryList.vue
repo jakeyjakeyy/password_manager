@@ -14,7 +14,6 @@ const setSelectionHandler = (entry: any) => {
 </script>
 
 <template>
-  <!-- <button @click="setSelectionHandler">Set Selection</button> -->
   <div class="vault-entry-list">
     <div v-for="entry in vaultEntries" :key="entry.id">
       <VaultEntryListItem
@@ -34,4 +33,15 @@ const setSelectionHandler = (entry: any) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.vault-entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  max-height: 70vh;
+  overflow-y: auto;
+  transition: all 0.3s;
+}
+</style>

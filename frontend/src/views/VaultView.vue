@@ -121,9 +121,11 @@ const setSelection = (event: any) => {
           <p>No entries found</p>
         </div>
         <div v-else-if="searchList.length" class="vaultEntries">
-          <div v-for="entry in searchList" class="vaultEntry">
-            <VaultEntry :entry="entry" :updateEntries="updateEntries" />
-          </div>
+          <VaultEntryList
+            @set-selection="setSelection"
+            :vaultEntries="searchList"
+            :selectedEntry="selectedEntry"
+          />
         </div>
         <div v-else class="vaultEntries">
           <VaultEntryList
@@ -155,6 +157,10 @@ const setSelection = (event: any) => {
   width: 30vw;
   height: 100%;
   padding: 1rem;
+}
+
+.vault-controller-container {
+  height: 10rem;
 }
 
 .vaultEntries {
