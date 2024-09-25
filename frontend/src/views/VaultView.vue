@@ -153,8 +153,8 @@ const setSelection = (event: any) => {
   display: flex;
   flex-direction: row;
   align-items: start;
-  height: 93vh;
   width: 100vw;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -162,7 +162,6 @@ const setSelection = (event: any) => {
   display: flex;
   flex-direction: column;
   width: 30vw;
-  height: 100%;
   padding: 1rem;
 }
 
@@ -170,9 +169,17 @@ const setSelection = (event: any) => {
   height: 10rem;
 }
 
+.vault-entries-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
 .vaultEntries {
   display: flex;
   flex-direction: column;
+  height: 100%;
   overflow-y: auto;
 }
 

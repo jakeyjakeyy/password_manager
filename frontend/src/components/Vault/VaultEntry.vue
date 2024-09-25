@@ -79,7 +79,7 @@ const handleDelete = async () => {
     }
     updateEntries();
     closeModal();
-    emit("unselect");
+    emitUnselect();
   } else {
     alert("Failed to delete entry");
   }
@@ -125,6 +125,10 @@ const handleDeleteFile = async (id: number) => {
     alert("Failed to delete file");
   }
 };
+
+function emitUnselect() {
+  emit("unselect");
+}
 </script>
 
 <template>
@@ -225,6 +229,15 @@ const handleDeleteFile = async (id: number) => {
         Delete
       </button>
     </div>
+    <!-- Deselect Button -->
+    <button
+      class="deselect-button button"
+      aria-label="close"
+      @click="emitUnselect()"
+    >
+      X
+    </button>
+    <!-- Modal -->
     <div
       class="modal"
       :id="'confirm-delete-entry-modal' + entry.id"
@@ -244,6 +257,7 @@ const handleDeleteFile = async (id: number) => {
 
 <style scoped>
 .vaultEntry {
+  position: relative;
   margin-top: 5rem;
   height: 70%;
   display: flex;
@@ -269,5 +283,12 @@ const handleDeleteFile = async (id: number) => {
 .vault-entry-post-controller {
   display: flex;
   flex-direction: row;
+}
+
+.deselect-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 1rem;
 }
 </style>

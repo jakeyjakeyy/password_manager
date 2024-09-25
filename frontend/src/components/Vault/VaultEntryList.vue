@@ -40,8 +40,8 @@ const setSelectionHandler = (entry: any) => {
   gap: 0.5rem;
   padding: 1rem;
   width: 100%;
-  max-height: 70vh;
-  overflow-y: auto;
+  max-height: 73vh;
+  overflow-y: scroll;
   transition: all 0.3s;
 }
 </style>
