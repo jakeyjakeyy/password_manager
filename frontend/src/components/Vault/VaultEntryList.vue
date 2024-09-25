@@ -41,7 +41,7 @@ const setSelectionHandler = (entry: any) => {
   padding: 1rem;
   width: 100%;
   max-height: 73vh;
-  overflow-y: scroll;
+  overflow-y: auto;
   transition: all 0.3s;
 }
 </style>

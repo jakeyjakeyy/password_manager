@@ -253,6 +253,11 @@ class FileAdd(APIView):
             if entry.user != request.user:
                 return Response({"message": "Unauthorized"}, status=401)
             fileBytes = ToBytes(request.data["file"])
+            # check file extension
+            if not request.data["name"].endswith(
+                (".txt", ".csv", ".json", ".pdf", ".zip")
+            ):
+                return Response({"message": "Invalid file type"}, status=422)
             # make sure fize size below 5MB
             if len(fileBytes) > 5 * 1024 * 1024:
                 return Response({"message": "Content Too Large"}, status=413)

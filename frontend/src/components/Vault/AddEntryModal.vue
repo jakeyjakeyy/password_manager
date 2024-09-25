@@ -50,6 +50,10 @@ const generatePassword = () => {
 
 const onFileChange = async (e: any) => {
   const file = e.target.files[0];
+  if (file.size > 5 * 1024 * 1024) {
+    alert("File size must be less than 5MB");
+    return;
+  }
   files.value.push(file);
 };
 
@@ -132,6 +136,7 @@ const removeFile = (file: File) => {
               <input
                 class="file-input"
                 type="file"
+                accept=".txt,.csv,.json,.pdf,.zip"
                 v-on:change="onFileChange"
               />
               <span class="file-cta">
