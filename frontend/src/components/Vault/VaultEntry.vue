@@ -136,9 +136,10 @@ function emitUnselect() {
   <div class="vaultEntry">
     <div class="vault-entry-content-container">
       <div class="vaultEntryHeader">
-        <h1 v-if="!editing" class="title" @click="handleEdit">
+        <h1 class="title">Entry Name</h1>
+        <p v-if="!editing" class="subtitle" @click="handleEdit">
           {{ entry.name }}
-        </h1>
+        </p>
         <input
           v-else
           class="input"
@@ -149,7 +150,10 @@ function emitUnselect() {
         />
       </div>
       <div class="vaultEntryUsername">
-        <p v-if="!editing" @click="handleEdit">{{ entry.username }}</p>
+        <h1 class="title">Username</h1>
+        <p v-if="!editing" class="subtitle" @click="handleEdit">
+          {{ entry.username }}
+        </p>
         <input
           v-else
           class="input"
@@ -160,18 +164,24 @@ function emitUnselect() {
         />
       </div>
       <div class="vaultEntryPassword">
-        <button class="button is-primary" @click="handleShowPassword">
-          {{ showPassword ? "Hide Password" : "Show Password" }}
-        </button>
-        <button
-          v-if="!copiedConfirmation"
-          class="button is-primary"
-          @click="copyPassword"
-        >
-          Copy Password
-        </button>
-        <button v-else class="button is-success">Copied!</button>
-        <p v-if="showPassword && !editing">{{ password }}</p>
+        <h1 class="title">Password</h1>
+        <div class="password-controls">
+          <button class="button is-primary" @click="handleShowPassword">
+            <v-icon v-if="showPassword" name="bi-eye-slash" scale="1.25" />
+            <v-icon v-else name="bi-eye" scale="1.25" />
+          </button>
+          <button
+            v-if="!copiedConfirmation"
+            class="button is-info"
+            @click="copyPassword"
+          >
+            <v-icon name="bi-clipboard" scale="1.25" />
+          </button>
+          <button v-else class="button is-success">
+            <v-icon name="bi-clipboard-check" scale="1.25" />
+          </button>
+        </div>
+        <p v-if="showPassword && !editing" class="subtitle">{{ password }}</p>
         <input
           v-else-if="!showPassword && editing"
           class="input"
@@ -188,12 +198,13 @@ function emitUnselect() {
           :placeholder="password"
           v-on:change="changedValues = true"
         />
-        <p v-else @click="handleEdit">
+        <p v-else @click="handleEdit" class="subtitle">
           <span v-for="i in password.length">*</span>
         </p>
       </div>
       <div class="vaultEntryFiles">
-        <button class="button is-primary" @click="uploadFile">Add Files</button>
+        <h1 class="title">Files</h1>
+        <button class="button is-link" @click="uploadFile">Add Files</button>
         <div v-for="file in files" class="vaultEntryFile">
           <p>{{ file.file.name }}</p>
           <div class="buttons are-small">
@@ -264,10 +275,11 @@ function emitUnselect() {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 1rem;
 }
 .vaultEntryHeader {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 .vaultEntryFile {
   display: flex;
@@ -279,11 +291,13 @@ function emitUnselect() {
 .vaultEntryUsername,
 .vaultEntryPassword {
   cursor: pointer;
+  width: fit-content;
 }
 
-.vault-entry-post-controller {
+.vault-entry-content-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .deselect-button {
@@ -291,5 +305,17 @@ function emitUnselect() {
   top: 0;
   right: 0;
   margin: 1rem;
+}
+
+.password-controls {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+.subtitle {
+  margin-top: 0.5rem;
+  margin-left: 1rem;
 }
 </style>

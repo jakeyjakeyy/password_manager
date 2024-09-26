@@ -10,19 +10,19 @@
 }
 
 :root {
-  --text: #0f0c12;
-  --background: #f7f6f9;
-  --primary: #84729d;
-  --secondary: #c9b0b2;
-  --accent: #b6a696;
-  --bulma-primary-h: 265deg;
-  --bulma-primary-s: 18%;
-  --bulma-primary-l: 53%;
-  --bulma-link-h: 355deg;
-  --bulma-link-s: 19%;
-  --bulma-link-l: 74%;
-  --bulma-info-h: 30deg;
-  --bulma-info-s: 18%;
-  --bulma-info-l: 65%;
-  --bulma-scheme-h: 256;
+  --text: #060d09;
+  --background: #f5faf7;
+  --primary: #57ae74;
+  --secondary: #d2a1c9;
+  --accent: #bf807a;
+  --bulma-primary-h: 140deg;
+  --bulma-primary-s: 35%;
+  --bulma-primary-l: 51%;
+  --bulma-link-h: 311deg;
+  --bulma-link-s: 35%;
+  --bulma-link-l: 73%;
+  --bulma-info-h: 5deg;
+  --bulma-info-s: 35%;
+  --bulma-info-l: 61%;
+  --bulma-scheme-h: 144;
 }
