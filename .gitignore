@@ -3,3 +3,4 @@ __pycache__/
 vault.log
 venv/
 backend/files/
+node_modules/
