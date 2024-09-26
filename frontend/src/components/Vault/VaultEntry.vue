@@ -241,14 +241,23 @@ function emitUnselect() {
         Delete
       </button>
     </div>
-    <!-- Deselect Button -->
-    <button
-      class="deselect-button button"
-      aria-label="close"
-      @click="emitUnselect()"
-    >
-      X
-    </button>
+    <div class="entry-button-controls">
+      <!-- Close Editing Button -->
+      <button v-if="!editing" class="button" @click="handleEdit">
+        <v-icon name="bi-pencil-square" scale="1.25" />
+      </button>
+      <button v-else class="button" @click="editing = false">
+        <v-icon name="bi-check-lg" scale="1.25" />
+      </button>
+      <!-- Deselect Button -->
+      <button
+        class="deselect-button button"
+        aria-label="close"
+        @click="emitUnselect()"
+      >
+        <v-icon name="io-close-sharp" scale="1.25" />
+      </button>
+    </div>
     <!-- Modal -->
     <div
       class="modal"
@@ -300,11 +309,14 @@ function emitUnselect() {
   gap: 1rem;
 }
 
-.deselect-button {
+.entry-button-controls {
+  display: flex;
+  flex-direction: row;
   position: absolute;
   top: 0;
   right: 0;
   margin: 1rem;
+  gap: 0.5rem;
 }
 
 .password-controls {

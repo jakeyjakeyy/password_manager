@@ -12,9 +12,20 @@ import {
   BiEyeSlash,
   BiClipboardCheck,
   BiClipboard,
+  BiPencilSquare,
+  IoCloseSharp,
+  BiCheckLg,
 } from "oh-vue-icons/icons";
 
-addIcons(BiEye, BiEyeSlash, BiClipboardCheck, BiClipboard);
+addIcons(
+  BiEye,
+  BiEyeSlash,
+  BiClipboardCheck,
+  BiClipboard,
+  BiPencilSquare,
+  IoCloseSharp,
+  BiCheckLg
+);
 
 const app = createApp(App);
 
