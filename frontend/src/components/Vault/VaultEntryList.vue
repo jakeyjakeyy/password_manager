@@ -20,14 +20,18 @@ const setSelectionHandler = (entry: any) => {
         v-if="entry !== selectedEntry"
         :entry="entry"
         @click="setSelectionHandler(entry)"
+        @keydown.enter="setSelectionHandler(entry)"
         :selectedEntry="selectedEntry"
+        tabindex="0"
       />
       <VaultEntryListItem
         v-else
         :entry="entry"
         @click="setSelectionHandler(null)"
+        @keydown.enter="setSelectionHandler(null)"
         :selectedEntry="selectedEntry"
         :active="true"
+        tabindex="0"
       />
     </div>
   </div>
