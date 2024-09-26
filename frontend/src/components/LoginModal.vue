@@ -272,6 +272,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <style>
 .login-modal {
+  display: flex;
+  align-items: center;
   margin-right: 1rem;
 }
 #qr-code-box {
