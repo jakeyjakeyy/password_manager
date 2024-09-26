@@ -11,7 +11,7 @@ const props = defineProps(["entry", "selectedEntry", "active"]);
   >
     {{ entry.name }}
   </div>
-  <div v-else class="vault-entry-list-item border">
+  <div v-else class="vault-entry-list-item border inactive">
     {{ entry.name }}
   </div>
 </template>
@@ -28,7 +28,12 @@ const props = defineProps(["entry", "selectedEntry", "active"]);
 }
 
 .border {
-  border-image: linear-gradient(to right, #3acfd5 0%, #3a4ed5 100%) 1;
+  border-image: linear-gradient(
+      to right,
+      var(--primary) 0%,
+      var(--secondary) 100%
+    )
+    1;
   border-width: 1px;
   border-style: solid;
   padding: 5px;
@@ -36,13 +41,26 @@ const props = defineProps(["entry", "selectedEntry", "active"]);
 
 .active {
   animation: turnActive 0.5s forwards;
-  background-color: linear-gradient(to right, #3acfd5 0%, #3a4ed5 100%);
 }
 
 @keyframes turnActive {
   100% {
-    background-color: #3acfd5;
+    background-color: var(--accent);
     color: white;
+  }
+}
+
+.inactive {
+  animation: turnInactive 0.5s forwards;
+}
+
+@keyframes turnInactive {
+  0% {
+    background-color: var(--accent);
+    color: white;
+  }
+  100% {
+    background-color: var(--bulma-background-color);
   }
 }
 </style>

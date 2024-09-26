@@ -8,3 +8,21 @@
   width: 100vw;
   height: 100vh;
 }
+
+:root {
+  --text: #0f0c12;
+  --background: #f7f6f9;
+  --primary: #84729d;
+  --secondary: #c9b0b2;
+  --accent: #b6a696;
+  --bulma-primary-h: 265deg;
+  --bulma-primary-s: 18%;
+  --bulma-primary-l: 53%;
+  --bulma-link-h: 355deg;
+  --bulma-link-s: 19%;
+  --bulma-link-l: 74%;
+  --bulma-info-h: 30deg;
+  --bulma-info-s: 18%;
+  --bulma-info-l: 65%;
+  --bulma-scheme-h: 256;
+}
