@@ -1,6 +1,23 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import LoginModal from "./components/LoginModal.vue";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const $navbarBurgers = Array.prototype.slice.call(
+    document.querySelectorAll(".navbar-burger"),
+    0
+  );
+
+  $navbarBurgers.forEach((el) => {
+    el.addEventListener("click", () => {
+      const target = el.dataset.target;
+      const $target = document.getElementById(target);
+
+      el.classList.toggle("is-active");
+      $target?.classList.toggle("is-active");
+    });
+  });
+});
 </script>
 
 <template>
@@ -62,5 +79,10 @@ a {
   background-color: var(--bulma-background-color);
   border: var(--bulma-primary) 1px solid;
   color: var(--bulma-primary);
+}
+
+.navbar {
+  width: 100vw;
+  padding: 0 1rem;
 }
 </style>
