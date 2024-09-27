@@ -263,9 +263,12 @@ document.addEventListener("DOMContentLoaded", () => {
             I have scanned the QR code
           </button>
         </div>
+        <button
+          class="modal-close is-large"
+          aria-label="close"
+          @click="closeModal"
+        ></button>
       </div>
-
-      <button class="modal-close is-large" aria-label="close"></button>
     </div>
   </div>
 </template>
@@ -276,9 +279,27 @@ document.addEventListener("DOMContentLoaded", () => {
   align-items: center;
   margin-right: 1rem;
 }
+
+.modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
 #qr-code-box {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.login-modal {
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .login-modal {
+    margin-left: 1rem;
+    gap: 0.5rem;
+  }
 }
 </style>

@@ -216,4 +216,23 @@ const setSelection = (event: any) => {
 #sortBy {
   width: 100%;
 }
+
+@media (max-width: 768px) {
+  .vault-container {
+    flex-direction: column;
+  }
+  .vault-nav {
+    width: 100vw;
+    height: 30vh;
+    padding-bottom: 0;
+  }
+  .vault-browser {
+    width: 100vw;
+  }
+
+  .import,
+  .select {
+    width: 35%;
+  }
+}
 </style>

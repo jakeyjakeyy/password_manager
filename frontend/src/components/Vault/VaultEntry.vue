@@ -136,6 +136,7 @@ function emitUnselect() {
   <div class="vaultEntry">
     <div class="vault-entry-content-container">
       <div class="vaultEntryHeader">
+        <!-- Entry Name -->
         <h1 class="title">Entry Name</h1>
         <p v-if="!editing" class="subtitle" @click="handleEdit">
           {{ entry.name }}
@@ -149,6 +150,7 @@ function emitUnselect() {
           v-on:change="changedValues = true"
         />
       </div>
+      <!-- Entry Username -->
       <div class="vaultEntryUsername">
         <h1 class="title">Username</h1>
         <p v-if="!editing" class="subtitle" @click="handleEdit">
@@ -163,16 +165,21 @@ function emitUnselect() {
           v-on:change="changedValues = true"
         />
       </div>
+      <!-- Entry Password -->
       <div class="vaultEntryPassword">
         <h1 class="title">Password</h1>
+        <!-- Password Controls -->
         <div class="password-controls">
-          <button class="button is-primary" @click="handleShowPassword">
+          <button
+            class="button is-primary is-fullwidth"
+            @click="handleShowPassword"
+          >
             <v-icon v-if="showPassword" name="bi-eye-slash" scale="1.25" />
             <v-icon v-else name="bi-eye" scale="1.25" />
           </button>
           <button
             v-if="!copiedConfirmation"
-            class="button is-info"
+            class="button is-info is-fullwidth"
             @click="copyPassword"
           >
             <v-icon name="bi-clipboard" scale="1.25" />
@@ -202,9 +209,12 @@ function emitUnselect() {
           <span v-for="i in password.length">*</span>
         </p>
       </div>
+      <!-- Entry Files -->
       <div class="vaultEntryFiles">
         <h1 class="title">Files</h1>
-        <button class="button is-link" @click="uploadFile">Add Files</button>
+        <button class="button is-link" @click="uploadFile" id="add-files">
+          Add Files
+        </button>
         <div v-for="file in files" class="vaultEntryFile">
           <p>{{ file.file.name }}</p>
           <div class="buttons are-small">
@@ -222,6 +232,7 @@ function emitUnselect() {
       <button
         v-if="!editing || !changedValues"
         class="button is-primary"
+        id="save-button"
         disabled
         @click="submitEdit"
       >
@@ -230,12 +241,14 @@ function emitUnselect() {
       <button
         v-if="editing && changedValues"
         class="button is-primary"
+        id="save-button"
         @click="submitEdit"
       >
         Save Changes
       </button>
       <button
         class="button is-danger js-modal-trigger"
+        id="delete-button"
         :data-target="'confirm-delete-entry-modal' + entry.id"
       >
         Delete
@@ -329,5 +342,43 @@ function emitUnselect() {
 .subtitle {
   margin-top: 0.5rem;
   margin-left: 1rem;
+}
+
+@media (max-width: 768px) {
+  .vaultEntry {
+    margin-top: 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--bulma-primary);
+  }
+
+  .password-controls {
+    width: 100%;
+    padding-right: 1rem;
+  }
+
+  .vaultEntryHeader,
+  .vaultEntryUsername,
+  .vaultEntryPassword {
+    width: 100%;
+    padding-right: 1rem;
+  }
+
+  .vault-entry-post-controller {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  #delete-button {
+    width: 30%;
+  }
+
+  #save-button {
+    flex: 1;
+  }
+
+  #add-files {
+    width: 100%;
+  }
 }
 </style>
