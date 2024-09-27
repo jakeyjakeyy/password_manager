@@ -16,6 +16,7 @@ const twoFA = ref("");
 const loggedin = ref(false);
 const register = ref(false);
 const value = ref("");
+const secret = ref("");
 
 if (cookies.get("access_token") && cookies.get("refresh_token")) {
   loggedin.value = true;
@@ -116,6 +117,7 @@ async function handleRegister() {
     return;
   }
   value.value = data.uri;
+  secret.value = extractSecret();
   // We don't automatically log in anymore because the user needs to register their 2FA first
   // register.value = false;
   // handleLogin();
@@ -134,6 +136,25 @@ const closeQR = () => {
   value.value = "";
   register.value = false;
 };
+
+async function confirmQR() {
+  const res = await fetch(`${serverURL}/api/confirm2fa`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      user: username.value,
+    }),
+  });
+  closeQR();
+}
+
+function extractSecret() {
+  const uri = value.value;
+  const secret = uri.split("secret=")[1].split("&")[0];
+  return secret;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   // Add a click event on buttons to open a specific modal
@@ -284,9 +305,9 @@ document.addEventListener("DOMContentLoaded", () => {
           </h1>
           <div class="qrcode">
             <qrcode v-if="register && value" :value="value" />
-            <p>{{ value }}</p>
+            <p>Or manually enter the secret: {{ secret }}</p>
           </div>
-          <button class="button is-link" @click="closeQR">
+          <button class="button is-link" @click="confirmQR">
             I have scanned the QR code
           </button>
         </div>
@@ -326,6 +347,9 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 .qrcode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 1rem;
 }
 

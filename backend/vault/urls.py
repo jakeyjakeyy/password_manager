@@ -10,6 +10,7 @@ urlpatterns = [
     path("token/refresh", TokenRefreshView.as_view(), name="token-refresh"),
     path("register", Register.as_view(), name="register"),
     path("salt", SaltResponse.as_view(), name="salt"),
+    path("confirm2fa", ConfirmTwoFactor.as_view(), name="2fa"),
     path("vault/add", VaultAdd.as_view(), name="vault-add"),
     path("vault/add-batch", VaultAddBatch.as_view(), name="vault-add-batch"),
     path("vault/retrieve", VaultRetrieve.as_view(), name="vault-retrieve"),

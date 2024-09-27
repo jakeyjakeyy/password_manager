@@ -34,11 +34,25 @@ class Register(APIView):
             totp = pyotp.TOTP(totpDevice.secret)
             uri = totp.provisioning_uri(name=user.username, issuer_name="Vault")
 
-            return Response(
-                {"message": "User created", "uri": uri, "totp": totp}, status=200
-            )
+            return Response({"message": "User created", "uri": uri}, status=200)
         except Exception as e:
             return Response({"message": "User creation failed"}, status=400)
+
+
+class ConfirmTwoFactor(APIView):
+    def post(self, request):
+        logger.info("ConfirmTwoFactor")
+        try:
+            user = request.data["user"]
+            user = models.User.objects.get(username=user)
+            logger.info(f"User: {user}")
+            totp = models.TOTPDevice.objects.get(user=user)
+            logger.info(f"TOTP: {totp.confirmed}")
+            totp.confirmed = True
+            totp.save()
+            return Response({"message": "2FA confirmed"}, status=200)
+        except Exception as e:
+            return Response({"message": "Failed to confirm 2FA"}, status=400)
 
 
 class SaltResponse(APIView):
@@ -212,9 +226,14 @@ class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
 
         user = self.user
 
+        topt = models.TOTPDevice.objects.get(user=user)
+        if not topt.confirmed:
+            user.delete()
+            raise serializers.ValidationError(self.default_error_messages["no_2fa"])
+
         # TODO Remove before prodiction
         # debug: Returning here to skip 2FA check
-        return data
+        # return data
 
         # Get the 2FA token from the request
         two_fa_token = self.context["request"].data.get("twoFA", None)

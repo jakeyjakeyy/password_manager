@@ -34,6 +34,7 @@ class VaultEntry(models.Model):
 class TOTPDevice(Device):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     secret = EncryptedCharField(max_length=255, null=False)
+    confirmed = models.BooleanField(default=False)
 
 
 class fileEntry(models.Model):
