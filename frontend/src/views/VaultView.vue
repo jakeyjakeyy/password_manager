@@ -86,50 +86,55 @@ const setSelection = (event: any) => {
 </script>
 
 <template>
-  <div class="vaultContainer">
+  <div class="vault-container">
     <div class="vault-nav">
       <div class="vault-controller-container">
-        <div class="vaultHeader">
-          <div class="vaultHeaderButtons">
+        <div class="vault-header">
+          <div class="vault-header-buttons">
             <button
-              class="button js-modal-trigger"
+              class="button js-modal-trigger add"
               data-target="add-entry-modal"
             >
               Add Entry
             </button>
-            <button class="button js-modal-trigger" data-target="import-modal">
+            <button
+              class="button js-modal-trigger import"
+              data-target="import-modal"
+            >
               Import
             </button>
           </div>
-          <div class="select">
-            <select v-model="sortBy" @change="handleSort">
-              <option value="name">Name</option>
-              <option value="newest">Newest</option>
-            </select>
+          <div class="vault-header-search">
+            <input
+              v-model="searchTerm"
+              type="text"
+              placeholder="Search"
+              class="search-input input"
+              @input="handleSearch"
+            />
+            <div class="select">
+              <select v-model="sortBy" @change="handleSort" id="sortBy">
+                <option value="name">Name</option>
+                <option value="newest">Newest</option>
+              </select>
+            </div>
           </div>
-          <input
-            v-model="searchTerm"
-            type="text"
-            placeholder="Search"
-            class="input"
-            @input="handleSearch"
-          />
         </div>
       </div>
       <AddEntryModal :updateEntries="updateEntries" />
       <ImportEntries />
       <div class="vault-entries-container">
-        <div v-if="!vaultEntries.length" class="vaultEntries">
+        <div v-if="!vaultEntries.length" class="vault-entries">
           <p>No entries found</p>
         </div>
-        <div v-else-if="searchList.length" class="vaultEntries">
+        <div v-else-if="searchList.length" class="vault-entries">
           <VaultEntryList
             @set-selection="setSelection"
             :vaultEntries="searchList"
             :selectedEntry="selectedEntry"
           />
         </div>
-        <div v-else class="vaultEntries">
+        <div v-else class="vault-entries">
           <VaultEntryList
             @set-selection="setSelection"
             :vaultEntries="vaultEntries"
@@ -149,7 +154,7 @@ const setSelection = (event: any) => {
 </template>
 
 <style scoped>
-.vaultContainer {
+.vault-container {
   display: flex;
   flex-direction: row;
   align-items: start;
@@ -165,10 +170,6 @@ const setSelection = (event: any) => {
   padding: 1rem;
 }
 
-.vault-controller-container {
-  height: 10rem;
-}
-
 .vault-entries-container {
   display: flex;
   flex-direction: column;
@@ -176,7 +177,7 @@ const setSelection = (event: any) => {
   overflow-y: auto;
 }
 
-.vaultEntries {
+.vault-entries {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -189,5 +190,30 @@ const setSelection = (event: any) => {
   width: 70vw;
   height: 100%;
   padding: 1rem;
+}
+
+.vault-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vault-header-search,
+.vault-header-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.import,
+.select {
+  width: 20%;
+}
+.add,
+.search-input {
+  flex: 1;
+}
+
+#sortBy {
+  width: 100%;
 }
 </style>
