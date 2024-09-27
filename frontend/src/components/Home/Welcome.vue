@@ -29,4 +29,21 @@
   margin-bottom: 1rem;
   text-align: center;
 }
+
+.welcome-header {
+  animation: slide-in-left 1s forwards;
+}
+
+.welcome-content {
+  animation: slide-in-left 1.2s forwards;
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
 </style>

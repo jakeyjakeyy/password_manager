@@ -191,24 +191,26 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
     <div v-else>
       <!-- If not logged in -->
-      <button
-        v-if="loggedin === false"
-        class="button js-modal-trigger"
-        data-target="login-modal"
-        @click="register = true"
-      >
-        Register
-      </button>
-      <button
-        v-if="loggedin === false"
-        class="button js-modal-trigger"
-        data-target="login-modal"
-        @click="register = false"
-      >
-        Login
-      </button>
-      <!-- If logged in -->
-      <button v-else class="button" @click="handleLogout">Logout</button>
+      <div class="nav-button-container">
+        <button
+          v-if="loggedin === false"
+          class="button js-modal-trigger gap"
+          data-target="login-modal"
+          @click="register = true"
+        >
+          Register
+        </button>
+        <button
+          v-if="loggedin === false"
+          class="button js-modal-trigger"
+          data-target="login-modal"
+          @click="register = false"
+        >
+          Login
+        </button>
+        <!-- If logged in -->
+        <button v-else class="button" @click="handleLogout">Logout</button>
+      </div>
     </div>
     <div :id="cta ? 'cta-modal' : 'login-modal'" class="modal">
       <div class="modal-background"></div>
@@ -280,7 +282,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <h1 class="title">
             Scan the QR code below with your authenticator app
           </h1>
-          <qrcode v-if="register && value" :value="value" />
+          <div class="qrcode">
+            <qrcode v-if="register && value" :value="value" />
+            <p>{{ value }}</p>
+          </div>
           <button class="button is-link" @click="closeQR">
             I have scanned the QR code
           </button>
@@ -314,12 +319,18 @@ document.addEventListener("DOMContentLoaded", () => {
   align-items: center;
 }
 
-.login-modal {
+.nav-button-container {
+  display: flex;
+  flex-direction: row;
   gap: 1rem;
 }
 
+.qrcode {
+  margin: 1rem;
+}
+
 .cta-modal {
-  height: 35%;
+  height: 30%;
   width: 100%;
 }
 
@@ -329,17 +340,30 @@ document.addEventListener("DOMContentLoaded", () => {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  gap: 2rem;
+  animation: slide-in-right 1s forwards;
 }
 
 .cta {
   height: 100%;
   width: 100%;
+  border-radius: 30px;
+  font-size: 2rem;
 }
 
 @media (max-width: 768px) {
   .login-modal {
     margin-left: 1rem;
     gap: 0.5rem;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
   }
 }
 </style>

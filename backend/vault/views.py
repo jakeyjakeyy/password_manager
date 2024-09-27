@@ -34,7 +34,9 @@ class Register(APIView):
             totp = pyotp.TOTP(totpDevice.secret)
             uri = totp.provisioning_uri(name=user.username, issuer_name="Vault")
 
-            return Response({"message": "User created", "uri": uri}, status=200)
+            return Response(
+                {"message": "User created", "uri": uri, "totp": totp}, status=200
+            )
         except Exception as e:
             return Response({"message": "User creation failed"}, status=400)
 
