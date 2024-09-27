@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
 import { deriveKey, storeKey, deleteKey } from "@/utils/Cryptography";
 import Qrcode from "qrcode.vue";
+const { cta } = defineProps(["cta"]);
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 const router = useRouter();
@@ -170,25 +171,46 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <template>
-  <div class="login-modal">
-    <button
-      v-if="loggedin === false"
-      class="button js-modal-trigger"
-      data-target="login-modal"
-      @click="register = true"
-    >
-      Register
-    </button>
-    <button
-      v-if="loggedin === false"
-      class="button js-modal-trigger"
-      data-target="login-modal"
-      @click="register = false"
-    >
-      Login
-    </button>
-    <button v-else class="button" @click="handleLogout">Logout</button>
-    <div id="login-modal" class="modal">
+  <div :class="cta ? 'cta-modal' : 'login-modal'">
+    <div class="cta-login-container" v-if="cta">
+      <!-- If CTA -->
+      <button
+        class="button js-modal-trigger cta is-primary"
+        data-target="cta-modal"
+        @click="register = true"
+      >
+        Register for Free
+      </button>
+      <button
+        class="button js-modal-trigger cta is-info"
+        data-target="cta-modal"
+        @click="register = false"
+      >
+        Login
+      </button>
+    </div>
+    <div v-else>
+      <!-- If not logged in -->
+      <button
+        v-if="loggedin === false"
+        class="button js-modal-trigger"
+        data-target="login-modal"
+        @click="register = true"
+      >
+        Register
+      </button>
+      <button
+        v-if="loggedin === false"
+        class="button js-modal-trigger"
+        data-target="login-modal"
+        @click="register = false"
+      >
+        Login
+      </button>
+      <!-- If logged in -->
+      <button v-else class="button" @click="handleLogout">Logout</button>
+    </div>
+    <div :id="cta ? 'cta-modal' : 'login-modal'" class="modal">
       <div class="modal-background"></div>
 
       <div class="modal-content">
@@ -247,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="field">
               <div class="control">
-                <button class="button is-link" type="submit">
+                <button class="button is-link is-fullwidth" type="submit">
                   {{ register ? "Register" : "Login" }}
                 </button>
               </div>
@@ -294,6 +316,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 .login-modal {
   gap: 1rem;
+}
+
+.cta-modal {
+  height: 35%;
+  width: 100%;
+}
+
+.cta-login-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.cta {
+  height: 100%;
+  width: 100%;
 }
 
 @media (max-width: 768px) {

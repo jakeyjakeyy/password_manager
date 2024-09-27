@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
+import Welcome from "@/components/Home/Welcome.vue";
+import LoginModal from "@/components/LoginModal.vue";
 onMounted(() => {
   const navRouterButtons = document.querySelectorAll(".navbar-item");
   navRouterButtons.forEach((button) => {
@@ -10,7 +12,19 @@ onMounted(() => {
 </script>
 
 <template>
-  <main>
-    <h1>Home</h1>
-  </main>
+  <div class="home-container">
+    <Welcome />
+    <LoginModal cta="true" />
+  </div>
 </template>
+
+<style scoped>
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10%;
+  height: 100%;
+}
+</style>
