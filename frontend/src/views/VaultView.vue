@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { checkToken } from "@/utils/RefreshToken";
 import { useRouter } from "vue-router";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, onUnmounted } from "vue";
 import { Retrieve } from "@/utils/VaultEntry";
 import Fuse from "fuse.js";
 import AddEntryModal from "@/components/Vault/AddEntryModal.vue";
@@ -50,6 +50,14 @@ onMounted(async () => {
     // initialize list sorting
     handleSort();
   }
+
+  // Timer to check for token expiration
+  setInterval(() => {
+    if (!checkToken()) {
+      // Redirect to login if token is invalid
+      window.location.href = "/";
+    }
+  }, 60000);
 });
 
 const handleSearch = () => {
