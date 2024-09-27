@@ -3,7 +3,7 @@ import { openDB } from "idb";
 async function deriveKey(
   masterPassword: string,
   salt: string,
-  iterations = 100000,
+  iterations = 600000,
   keyLength = 256
 ) {
   const encoder = new TextEncoder();
