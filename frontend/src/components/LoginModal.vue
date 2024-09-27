@@ -22,11 +22,14 @@ if (cookies.get("access_token") && cookies.get("refresh_token")) {
   loggedin.value = true;
 }
 
-setInterval(() => {
-  if (cookies.get("access_token") && cookies.get("refresh_token")) {
-    loggedin.value = true;
-  }
-}, 1000);
+if (!cta) {
+  const checklogin = setInterval(() => {
+    if (cookies.get("access_token") && cookies.get("refresh_token")) {
+      loggedin.value = true;
+      clearInterval(checklogin);
+    }
+  }, 100);
+}
 
 function openModal($el: any) {
   $el.classList.add("is-active");
