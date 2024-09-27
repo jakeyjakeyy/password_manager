@@ -38,6 +38,15 @@
   animation: slide-in-left 1.2s forwards;
 }
 
+@media (max-width: 768px) {
+  .welcome-container {
+    padding: 1rem;
+  }
+  .title {
+    font-size: 3rem;
+  }
+}
+
 @keyframes slide-in-left {
   from {
     transform: translateX(-100%);

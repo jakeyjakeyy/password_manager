@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <template>
-  <div :class="cta ? 'cta-modal' : 'login-modal'">
+  <div :class="cta ? 'cta-container' : 'login-container'">
     <div class="cta-login-container" v-if="cta">
       <!-- If CTA -->
       <button
@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </template>
 
 <style>
-.login-modal {
+.login-container {
   display: flex;
   align-items: center;
   margin-right: 1rem;
@@ -329,7 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
   margin: 1rem;
 }
 
-.cta-modal {
+.cta-container {
   height: 30%;
   width: 100%;
 }
@@ -355,6 +355,10 @@ document.addEventListener("DOMContentLoaded", () => {
   .login-modal {
     margin-left: 1rem;
     gap: 0.5rem;
+  }
+  .cta-login-container {
+    gap: 1rem;
+    flex-direction: column;
   }
 }
 

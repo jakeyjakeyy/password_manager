@@ -27,4 +27,10 @@ onMounted(() => {
   padding: 0 10%;
   height: 100%;
 }
+
+@media (max-width: 768px) {
+  .home-container {
+    padding: 0 1rem;
+  }
+}
 </style>
