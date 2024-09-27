@@ -41,13 +41,10 @@ class Register(APIView):
 
 class ConfirmTwoFactor(APIView):
     def post(self, request):
-        logger.info("ConfirmTwoFactor")
         try:
             user = request.data["user"]
             user = models.User.objects.get(username=user)
-            logger.info(f"User: {user}")
             totp = models.TOTPDevice.objects.get(user=user)
-            logger.info(f"TOTP: {totp.confirmed}")
             totp.confirmed = True
             totp.save()
             return Response({"message": "2FA confirmed"}, status=200)
