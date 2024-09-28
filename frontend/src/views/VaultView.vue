@@ -85,7 +85,9 @@ const handleSort = () => {
 const updateEntries = async () => {
   vaultEntries.value = await Retrieve();
   fuse = new Fuse(vaultEntries.value, fuseOptions);
-  handleSearch();
+  searchTerm.value = "";
+  handleSort();
+  searchList.value = [];
 };
 
 const setSelection = (event: any) => {
