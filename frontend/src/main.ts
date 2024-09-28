@@ -15,6 +15,7 @@ import {
   BiPencilSquare,
   IoCloseSharp,
   BiCheckLg,
+  BiGithub,
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -24,7 +25,8 @@ addIcons(
   BiClipboard,
   BiPencilSquare,
   IoCloseSharp,
-  BiCheckLg
+  BiCheckLg,
+  BiGithub
 );
 
 const app = createApp(App);

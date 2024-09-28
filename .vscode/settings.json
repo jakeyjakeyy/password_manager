@@ -1,3 +1,8 @@
 {
-  "conventionalCommits.scopes": ["VaultEntry", "VaultView", "HomeView"]
+  "conventionalCommits.scopes": [
+    "VaultEntry",
+    "VaultView",
+    "HomeView",
+    "Footer"
+  ]
 }

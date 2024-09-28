@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import LoginModal from "./components/LoginModal.vue";
+import TheFooter from "./components/TheFooter.vue";
 
 document.addEventListener("DOMContentLoaded", () => {
   const $navbarBurgers = Array.prototype.slice.call(
@@ -64,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   <div class="browser">
     <RouterView />
+    <TheFooter />
   </div>
 </template>
 
