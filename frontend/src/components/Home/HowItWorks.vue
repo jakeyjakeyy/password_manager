@@ -12,6 +12,7 @@
           <span
             ><a
               href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-175Br1.pdf"
+              target="_blank"
               >National Institute of Standards and Technology (NIST)</a
             ></span
           >, The Vault ensure that your passwords and files remain secure and
