@@ -147,14 +147,10 @@ function handleCopy(value: string, type: string) {
 <template>
   <div class="vaultEntry">
     <div class="vault-entry-content-container">
-      <div class="vaultEntryHeader">
+      <div class="vaultEntryHeader" @click="handleCopy(entry.name, 'name')">
         <!-- Entry Name -->
         <h1 class="title">Entry Name</h1>
-        <p
-          v-if="!editing"
-          class="subtitle"
-          @click="handleCopy(entry.name, 'name')"
-        >
+        <p v-if="!editing" class="subtitle">
           {{ entry.name }}
           <span v-if="copiedValue === 'name' && copiedConfirmation">
             Copied!
@@ -170,13 +166,12 @@ function handleCopy(value: string, type: string) {
         />
       </div>
       <!-- Entry Username -->
-      <div class="vaultEntryUsername">
+      <div
+        class="vaultEntryUsername"
+        @click="handleCopy(entry.username, 'username')"
+      >
         <h1 class="title">Username</h1>
-        <p
-          v-if="!editing"
-          class="subtitle"
-          @click="handleCopy(entry.username, 'username')"
-        >
+        <p v-if="!editing" class="subtitle">
           {{ entry.username }}
           <span v-if="copiedValue === 'username' && copiedConfirmation">
             Copied!
@@ -193,7 +188,9 @@ function handleCopy(value: string, type: string) {
       </div>
       <!-- Entry Password -->
       <div class="vaultEntryPassword">
-        <h1 class="title">Password</h1>
+        <h1 class="title" @click="handleCopy(password, 'password')">
+          Password
+        </h1>
         <!-- Password Controls -->
         <div class="password-controls">
           <button
@@ -230,7 +227,7 @@ function handleCopy(value: string, type: string) {
           :placeholder="password"
           v-on:change="changedValues = true"
         />
-        <p v-else @click="handleCopy(password, 'password')" class="subtitle">
+        <p v-else class="subtitle" @click="handleCopy(password, 'password')">
           <span v-for="i in password.length">*</span>
           <span v-if="copiedValue === 'password' && copiedConfirmation">
             Copied!
@@ -340,7 +337,15 @@ function handleCopy(value: string, type: string) {
 .vaultEntryHeader,
 .vaultEntryUsername,
 .vaultEntryPassword {
+  cursor: pointer;
   width: 100%;
+}
+
+.vaultEntryHeader:hover,
+.vaultEntryUsername:hover,
+.vaultEntryPassword:hover {
+  background-color: var(--bulma-background);
+  color: white;
 }
 
 .vault-entry-content-container {
