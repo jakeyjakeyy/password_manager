@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import Welcome from "@/components/Home/Welcome.vue";
-import LoginModal from "@/components/LoginModal.vue";
 import HowItWorks from "@/components/Home/HowItWorks.vue";
+import Source from "@/components/Home/Source.vue";
 onMounted(() => {
   const navRouterButtons = document.querySelectorAll(".navbar-item");
   navRouterButtons.forEach((button) => {
@@ -16,6 +16,7 @@ onMounted(() => {
   <div class="home-container">
     <Welcome />
     <HowItWorks />
+    <Source />
   </div>
 </template>
 
