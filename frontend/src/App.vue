@@ -68,6 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
 </template>
 
 <style scoped>
+header {
+  position: fixed;
+  z-index: 1000;
+}
 .browser {
   width: 100%;
   height: 100%;

@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import LoginModal from "../LoginModal.vue";
+</script>
 
 <template>
   <div class="welcome-container">
@@ -6,10 +8,13 @@
       <h1 class="title">Welcome to The Vault</h1>
     </div>
     <div class="welcome-content">
-      <p class="subtitle">
+      <p class="subtitle is-4">
         A cryptographically secure password vault and generator designed to keep
         your credentials safe and easily accessible.
       </p>
+    </div>
+    <div class="welcome-cta">
+      <LoginModal cta="true" />
     </div>
   </div>
 </template>
@@ -22,6 +27,8 @@
   justify-content: center;
   padding: 5% 15%;
   text-align: center;
+  height: 100vh;
+  gap: 2rem;
 }
 
 .title {
@@ -36,6 +43,12 @@
 
 .welcome-content {
   animation: slide-in-left 1.2s forwards;
+}
+
+.welcome-cta {
+  margin-top: 2rem;
+  height: 35%;
+  width: 100%;
 }
 
 @media (max-width: 768px) {

@@ -2,6 +2,7 @@
 import { onMounted } from "vue";
 import Welcome from "@/components/Home/Welcome.vue";
 import LoginModal from "@/components/LoginModal.vue";
+import HowItWorks from "@/components/Home/HowItWorks.vue";
 onMounted(() => {
   const navRouterButtons = document.querySelectorAll(".navbar-item");
   navRouterButtons.forEach((button) => {
@@ -14,7 +15,7 @@ onMounted(() => {
 <template>
   <div class="home-container">
     <Welcome />
-    <LoginModal cta="true" />
+    <HowItWorks />
   </div>
 </template>
 
@@ -25,7 +26,8 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   padding: 0 10%;
-  height: 100%;
+  min-height: 100vh;
+  height: fit-content;
 }
 
 @media (max-width: 768px) {

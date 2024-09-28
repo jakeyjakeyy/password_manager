@@ -363,7 +363,7 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 .cta-container {
-  height: 30%;
+  height: 100%;
   width: 100%;
 }
 
