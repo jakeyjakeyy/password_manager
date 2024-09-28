@@ -18,6 +18,7 @@ const editing = ref(false);
 const changedValues = ref(false);
 const files = ref<{ file: File; url: string; id: number }[]>([]);
 let showPasswordTimeout: any = null;
+let copiedTimeout: any = null;
 
 onMounted(async () => {
   password.value = await decryptPassword(entry.password, entry.iv);
@@ -136,7 +137,8 @@ function handleCopy(value: string, type: string) {
   navigator.clipboard.writeText(value);
   copiedValue.value = type;
   copiedConfirmation.value = true;
-  setTimeout(() => {
+  if (copiedTimeout) clearTimeout(copiedTimeout);
+  copiedTimeout = setTimeout(() => {
     copiedConfirmation.value = false;
   }, 1000);
 }
@@ -202,7 +204,16 @@ function handleCopy(value: string, type: string) {
             <v-icon v-else name="bi-eye" scale="1.25" />
           </button>
         </div>
-        <p v-if="showPassword && !editing" class="subtitle">{{ password }}</p>
+        <p
+          v-if="showPassword && !editing"
+          class="subtitle"
+          @click="handleCopy(password, 'password')"
+        >
+          {{ password }}
+          <span v-if="copiedValue === 'password' && copiedConfirmation">
+            Copied!
+          </span>
+        </p>
         <input
           v-else-if="!showPassword && editing"
           class="input"
@@ -329,8 +340,7 @@ function handleCopy(value: string, type: string) {
 .vaultEntryHeader,
 .vaultEntryUsername,
 .vaultEntryPassword {
-  cursor: pointer;
-  width: fit-content;
+  width: 100%;
 }
 
 .vault-entry-content-container {
@@ -352,6 +362,7 @@ function handleCopy(value: string, type: string) {
 .password-controls {
   display: flex;
   flex-direction: row;
+  width: 15%;
   gap: 0.5rem;
   margin-left: 1rem;
 }
@@ -359,6 +370,7 @@ function handleCopy(value: string, type: string) {
 .subtitle {
   margin-top: 0.5rem;
   margin-left: 1rem;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
