@@ -73,6 +73,7 @@ header {
   z-index: 1000;
 }
 .browser {
+  padding-top: 3.25rem;
   width: 100%;
   height: 100%;
 }
