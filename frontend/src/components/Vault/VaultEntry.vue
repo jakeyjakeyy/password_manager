@@ -12,6 +12,7 @@ const { entry, updateEntries } = defineProps(["entry", "updateEntries"]);
 const showPassword = ref(false);
 const password = ref("");
 const copiedConfirmation = ref(false);
+const copiedValue = ref<null | string>(null);
 const modal = ref<HTMLElement | null>(null);
 const editing = ref(false);
 const changedValues = ref(false);
@@ -130,6 +131,15 @@ const handleDeleteFile = async (id: number) => {
 function emitUnselect() {
   emit("unselect");
 }
+
+function handleCopy(value: string, type: string) {
+  navigator.clipboard.writeText(value);
+  copiedValue.value = type;
+  copiedConfirmation.value = true;
+  setTimeout(() => {
+    copiedConfirmation.value = false;
+  }, 1000);
+}
 </script>
 
 <template>
@@ -138,8 +148,15 @@ function emitUnselect() {
       <div class="vaultEntryHeader">
         <!-- Entry Name -->
         <h1 class="title">Entry Name</h1>
-        <p v-if="!editing" class="subtitle" @click="handleEdit">
+        <p
+          v-if="!editing"
+          class="subtitle"
+          @click="handleCopy(entry.name, 'name')"
+        >
           {{ entry.name }}
+          <span v-if="copiedValue === 'name' && copiedConfirmation">
+            Copied!
+          </span>
         </p>
         <input
           v-else
@@ -153,8 +170,15 @@ function emitUnselect() {
       <!-- Entry Username -->
       <div class="vaultEntryUsername">
         <h1 class="title">Username</h1>
-        <p v-if="!editing" class="subtitle" @click="handleEdit">
+        <p
+          v-if="!editing"
+          class="subtitle"
+          @click="handleCopy(entry.username, 'username')"
+        >
           {{ entry.username }}
+          <span v-if="copiedValue === 'username' && copiedConfirmation">
+            Copied!
+          </span>
         </p>
         <input
           v-else
@@ -177,16 +201,6 @@ function emitUnselect() {
             <v-icon v-if="showPassword" name="bi-eye-slash" scale="1.25" />
             <v-icon v-else name="bi-eye" scale="1.25" />
           </button>
-          <button
-            v-if="!copiedConfirmation"
-            class="button is-info is-fullwidth"
-            @click="copyPassword"
-          >
-            <v-icon name="bi-clipboard" scale="1.25" />
-          </button>
-          <button v-else class="button is-success">
-            <v-icon name="bi-clipboard-check" scale="1.25" />
-          </button>
         </div>
         <p v-if="showPassword && !editing" class="subtitle">{{ password }}</p>
         <input
@@ -205,8 +219,11 @@ function emitUnselect() {
           :placeholder="password"
           v-on:change="changedValues = true"
         />
-        <p v-else @click="handleEdit" class="subtitle">
+        <p v-else @click="handleCopy(password, 'password')" class="subtitle">
           <span v-for="i in password.length">*</span>
+          <span v-if="copiedValue === 'password' && copiedConfirmation">
+            Copied!
+          </span>
         </p>
       </div>
       <!-- Entry Files -->
