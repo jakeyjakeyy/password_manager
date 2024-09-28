@@ -33,6 +33,7 @@
   align-items: center;
   justify-content: start;
   min-height: 25vh;
+  margin-top: 5rem;
 }
 
 .header {

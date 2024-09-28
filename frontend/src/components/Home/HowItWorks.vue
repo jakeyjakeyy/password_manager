@@ -83,7 +83,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 5% 15%;
+  padding: 0 15%;
   text-align: center;
   gap: 2rem;
 }

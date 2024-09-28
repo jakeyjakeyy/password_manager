@@ -27,7 +27,7 @@ import LoginModal from "../LoginModal.vue";
   justify-content: center;
   padding: 5% 15%;
   text-align: center;
-  height: 100vh;
+  height: 90vh;
   gap: 2rem;
 }
 
