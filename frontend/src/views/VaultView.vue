@@ -130,7 +130,7 @@ const setSelection = (event: any) => {
         </div>
       </div>
       <AddEntryModal :updateEntries="updateEntries" />
-      <ImportEntries />
+      <ImportEntries @call-update-entries="updateEntries" />
       <div class="vault-entries-container">
         <div v-if="!vaultEntries.length" class="vault-entries">
           <p>No entries found</p>

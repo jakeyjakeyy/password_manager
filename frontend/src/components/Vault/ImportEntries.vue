@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { AddBatch } from "@/utils/VaultEntry";
+import { encryptPassword } from "@/utils/Cryptography";
 const entries = ref<File | null>(null);
 const fileContent = ref<any>(null);
-import { encryptPassword } from "@/utils/Cryptography";
+const emit = defineEmits(["callUpdateEntries"]);
 
 const handleClick = () => {
   // Default handling based on KeeperSecurity JSON export format
@@ -48,6 +49,17 @@ async function Import() {
     i++;
   }
   const response = await AddBatch(entriesDict);
+  if (response) {
+    emit("callUpdateEntries");
+    closeModal();
+  }
+}
+
+function closeModal() {
+  const modal = document.getElementById("import-modal");
+  if (modal) {
+    modal.classList.remove("is-active");
+  }
 }
 </script>
 
