@@ -61,7 +61,7 @@ onMounted(() => {
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">More</a>
               <div class="navbar-dropdown">
-                <a class="navbar-item">{{ username ? username : "Login" }}</a>
+                <a class="navbar-item">Account</a>
                 <a class="navbar-item">Settings</a>
                 <hr class="navbar-divider" />
                 <a
