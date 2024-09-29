@@ -2,6 +2,8 @@
 import { RouterLink, RouterView } from "vue-router";
 import LoginModal from "./components/LoginModal.vue";
 import TheFooter from "./components/TheFooter.vue";
+import { onMounted, ref } from "vue";
+const username = ref<string | null>(null);
 
 document.addEventListener("DOMContentLoaded", () => {
   const $navbarBurgers = Array.prototype.slice.call(
@@ -18,6 +20,17 @@ document.addEventListener("DOMContentLoaded", () => {
       $target?.classList.toggle("is-active");
     });
   });
+});
+
+onMounted(() => {
+  setInterval(() => {
+    console.log("checking");
+    if (localStorage.getItem("username")) {
+      username.value = localStorage.getItem("username");
+    } else {
+      username.value = null;
+    }
+  }, 100);
 });
 </script>
 
@@ -46,12 +59,17 @@ document.addEventListener("DOMContentLoaded", () => {
               >Vault</RouterLink
             >
             <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">Dropdown</a>
+              <a class="navbar-link">More</a>
               <div class="navbar-dropdown">
-                <a class="navbar-item">Dropdown item</a>
-                <a class="navbar-item">Other item</a>
+                <a class="navbar-item">{{ username ? username : "Login" }}</a>
+                <a class="navbar-item">Settings</a>
                 <hr class="navbar-divider" />
-                <a class="navbar-item">Separated link</a>
+                <a
+                  class="navbar-item"
+                  href="https://github.com/jakeyjakeyy/password_manager/issues"
+                  target="_blank"
+                  >Report an issue</a
+                >
               </div>
             </div>
           </div>

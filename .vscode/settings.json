@@ -3,6 +3,7 @@
     "VaultEntry",
     "VaultView",
     "HomeView",
-    "Footer"
+    "Footer",
+    "Navbar"
   ]
 }
