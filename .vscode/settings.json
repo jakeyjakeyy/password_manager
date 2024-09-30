@@ -4,6 +4,7 @@
     "VaultView",
     "HomeView",
     "Footer",
-    "Navbar"
+    "Navbar",
+    "AddEntryModal"
   ]
 }

@@ -22,10 +22,23 @@ const handleClick = async () => {
       );
     }
   }
+  clearVars();
   updateEntries();
+  closeModal();
+};
+
+function closeModal() {
+  clearVars();
   const modal = document.getElementById("add-entry-modal");
   if (modal) modal.classList.remove("is-active");
-};
+}
+
+function clearVars() {
+  username.value = "";
+  password.value = "";
+  name.value = "";
+  files.value = [];
+}
 
 const length = ref(20);
 const numbers = ref(true);
@@ -95,17 +108,19 @@ const removeFile = (file: File) => {
         </div>
         <div class="field">
           <label class="label">Password</label>
-          <button class="button" @click="hidden = !hidden">
-            {{ hidden ? "Show" : "Hide" }}
+          <button
+            class="button is-fullwidth is-info is-outlined"
+            @click="generatePassword"
+          >
+            Generate
           </button>
-          <button class="button" @click="generatePassword">Generate</button>
           <div class="control">
-            <div class="generateOptions">
-              <div class="lengthContainer">
+            <div class="generate-options">
+              <div class="length-container">
                 <input type="range" v-model="length" min="8" max="64" />
                 <label>{{ length }}</label>
               </div>
-              <div class="checkboxContainer">
+              <div class="checkbox-container">
                 <label class="checkbox">
                   <input type="checkbox" v-model="numbers" />
                   Numbers
@@ -124,14 +139,22 @@ const removeFile = (file: File) => {
                 </label>
               </div>
             </div>
-            <input
-              v-model="password"
-              class="input"
-              :type="hidden ? 'password' : 'text'"
-              placeholder="Password"
-            />
+            <div class="password-input">
+              <input
+                v-model="password"
+                class="input"
+                :type="hidden ? 'password' : 'text'"
+                placeholder="Password"
+              />
+              <span>
+                <button class="button" @click="hidden = !hidden">
+                  {{ hidden ? "Show" : "Hide" }}
+                </button></span
+              >
+            </div>
           </div>
           <div class="fileUpload">
+            <label class="label">Files</label>
             <label class="file-label">
               <input
                 class="file-input"
@@ -155,6 +178,7 @@ const removeFile = (file: File) => {
           Add
         </button>
       </div>
+      <span class="modal-close is-large" @click="closeModal"></span>
     </div>
   </div>
 </template>
@@ -164,5 +188,24 @@ const removeFile = (file: File) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.generate-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.checkbox-container,
+.length-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.password-input {
+  display: flex;
+  padding: 1rem 0;
 }
 </style>
