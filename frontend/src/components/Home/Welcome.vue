@@ -9,8 +9,8 @@ import LoginModal from "../LoginModal.vue";
     </div>
     <div class="welcome-content">
       <p class="subtitle is-4">
-        A cryptographically secure password vault and generator designed to keep
-        your credentials safe and easily accessible.
+        A cryptographically secure password manager designed to keep your
+        credentials safe and accessible.
       </p>
     </div>
     <div class="welcome-cta">
