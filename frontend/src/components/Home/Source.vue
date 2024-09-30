@@ -33,7 +33,9 @@
   align-items: center;
   justify-content: start;
   min-height: 25vh;
+  padding: 0 15%;
   margin-top: 5rem;
+  margin-bottom: 3rem;
 }
 
 .header {
