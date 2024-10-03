@@ -20,18 +20,8 @@ const files = ref<{ file: File; url: string; id: number }[]>([]);
 let showPasswordTimeout: any = null;
 let copiedTimeout: any = null;
 
-onMounted(async () => {
-  password.value = await decryptPassword(entry.password, entry.iv);
-  for (const file of entry.files) {
-    const decryptedFile = await decryptFile(file.file, file.iv, file.name);
-    const url = URL.createObjectURL(decryptedFile);
-    let fileObj = { file: decryptedFile, url: url, id: file.id };
-    files.value.push(fileObj);
-  }
-});
-
 const copyPassword = () => {
-  navigator.clipboard.writeText(password.value);
+  navigator.clipboard.writeText(entry.password);
 
   copiedConfirmation.value = true;
   setTimeout(() => {
@@ -65,7 +55,7 @@ const submitEdit = async () => {
   }
   const response = await Edit(
     entry.id,
-    password.value,
+    entry.password,
     entry.username,
     entry.name
   );
@@ -188,7 +178,7 @@ function handleCopy(value: string, type: string) {
       </div>
       <!-- Entry Password -->
       <div class="vaultEntryPassword">
-        <h1 class="title" @click="handleCopy(password, 'password')">
+        <h1 class="title" @click="handleCopy(entry.password, 'password')">
           Password
         </h1>
         <!-- Password Controls -->
@@ -204,9 +194,9 @@ function handleCopy(value: string, type: string) {
         <p
           v-if="showPassword && !editing"
           class="subtitle"
-          @click="handleCopy(password, 'password')"
+          @click="handleCopy(entry.password, 'password')"
         >
-          {{ password }}
+          {{ entry.password }}
           <span v-if="copiedValue === 'password' && copiedConfirmation">
             Copied!
           </span>
@@ -215,20 +205,24 @@ function handleCopy(value: string, type: string) {
           v-else-if="!showPassword && editing"
           class="input"
           type="password"
-          v-model="password"
-          :placeholder="password"
+          v-model="entry.password"
+          :placeholder="entry.password"
           v-on:change="changedValues = true"
         />
         <input
           v-else-if="showPassword && editing"
           class="input"
           type="text"
-          v-model="password"
-          :placeholder="password"
+          v-model="entry.password"
+          :placeholder="entry.password"
           v-on:change="changedValues = true"
         />
-        <p v-else class="subtitle" @click="handleCopy(password, 'password')">
-          <span v-for="i in password.length">*</span>
+        <p
+          v-else
+          class="subtitle"
+          @click="handleCopy(entry.password, 'password')"
+        >
+          <span v-for="i in entry.password.length">*</span>
           <span v-if="copiedValue === 'password' && copiedConfirmation">
             Copied!
           </span>
@@ -240,7 +234,7 @@ function handleCopy(value: string, type: string) {
         <button class="button is-link" @click="uploadFile" id="add-files">
           Add Files
         </button>
-        <div v-for="file in files" class="vaultEntryFile">
+        <div v-for="file in entry.files" class="vaultEntryFile">
           <p>{{ file.file.name }}</p>
           <div class="buttons are-small">
             <button class="button is-danger" @click="handleDeleteFile(file.id)">

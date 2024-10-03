@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 onMounted(() => {
   setInterval(() => {
-    console.log("checking");
     if (localStorage.getItem("username")) {
       username.value = localStorage.getItem("username");
     } else {

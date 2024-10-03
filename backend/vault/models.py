@@ -12,6 +12,15 @@ def generate_salt():
     return os.urandom(16).hex()
 
 
+class UserSecretEncrypted(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    password = models.CharField(null=False)
+    iv = models.CharField(null=False)
+
+    def __str__(self):
+        return self.user.username
+
+
 class ClientKeyDerivationSalt(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="salt")
     salt = models.CharField(max_length=64, default=generate_salt)

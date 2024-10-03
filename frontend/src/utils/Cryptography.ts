@@ -150,6 +150,12 @@ async function decryptFile(file: Uint8Array, iv: Uint8Array, name: string) {
   return decryptedFile;
 }
 
+function generateRecoverySecret() {
+  const array = new Uint8Array(32);
+  window.crypto.getRandomValues(array);
+  return btoa(String.fromCharCode(...array));
+}
+
 export {
   deriveKey,
   storeKey,
@@ -159,4 +165,5 @@ export {
   decryptPassword,
   encryptFile,
   decryptFile,
+  generateRecoverySecret,
 };

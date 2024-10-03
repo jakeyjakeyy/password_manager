@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { checkToken } from "@/utils/RefreshToken";
+import { decryptPassword, decryptFile } from "@/utils/Cryptography";
 import { useRouter } from "vue-router";
 import { ref, onMounted, watch, onUnmounted } from "vue";
 import { Retrieve } from "@/utils/VaultEntry";
@@ -90,9 +91,22 @@ const updateEntries = async () => {
   searchList.value = [];
 };
 
-const setSelection = (event: any) => {
-  if (event) selectedEntry.value = event;
-  else selectedEntry.value = null;
+const setSelection = async (event: any) => {
+  console.log(event);
+  if (event) {
+    let temp = JSON.parse(JSON.stringify(event));
+    let files = [];
+    temp.password = await decryptPassword(event.password, event.iv);
+    for (const file of event.files) {
+      const decryptedFile = await decryptFile(file.file, file.iv, file.name);
+      const url = URL.createObjectURL(decryptedFile);
+      let fileObj = { file: decryptedFile, url: url, id: file.id };
+      files.push(fileObj);
+    }
+    temp.files = files;
+    console.log(temp);
+    selectedEntry.value = temp;
+  } else selectedEntry.value = null;
 };
 </script>
 
