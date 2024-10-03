@@ -92,7 +92,6 @@ const updateEntries = async () => {
 };
 
 const setSelection = async (event: any) => {
-  console.log(event);
   if (event) {
     let temp = JSON.parse(JSON.stringify(event));
     let files = [];
@@ -104,7 +103,6 @@ const setSelection = async (event: any) => {
       files.push(fileObj);
     }
     temp.files = files;
-    console.log(temp);
     selectedEntry.value = temp;
   } else selectedEntry.value = null;
 };

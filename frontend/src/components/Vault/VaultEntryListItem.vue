@@ -6,7 +6,7 @@ const props = defineProps(["entry", "selectedEntry", "active"]);
 
 <template>
   <div
-    v-if="entry === selectedEntry"
+    v-if="selectedEntry && entry.id === selectedEntry.id"
     class="vault-entry-list-item border active"
   >
     {{ entry.name }}

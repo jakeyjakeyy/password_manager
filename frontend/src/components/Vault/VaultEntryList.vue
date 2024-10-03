@@ -9,7 +9,11 @@ const emit = defineEmits(["updateEntries", "setSelection"]);
 let active = false;
 
 const setSelectionHandler = (entry: any) => {
-  emit("setSelection", entry);
+  if (selectedEntry && entry.id === selectedEntry.id) {
+    emit("setSelection", null);
+  } else {
+    emit("setSelection", entry);
+  }
 };
 </script>
 
