@@ -18,4 +18,5 @@ urlpatterns = [
     path("vault/edit", VaultEdit.as_view(), name="vault-edit"),
     path("vault/files/add", FileAdd.as_view(), name="file-add"),
     path("vault/files/delete", FileDelete.as_view(), name="file-delete"),
+    path("recovery", Recovery.as_view(), name="recovery"),
 ]

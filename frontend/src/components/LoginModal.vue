@@ -2,7 +2,12 @@
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
-import { deriveKey, storeKey, deleteKey } from "@/utils/Cryptography";
+import {
+  deriveKey,
+  storeKey,
+  deleteKey,
+  generateRecoverySecret,
+} from "@/utils/Cryptography";
 import Qrcode from "qrcode.vue";
 const { cta } = defineProps(["cta"]);
 const { cookies } = useCookies();
@@ -17,6 +22,7 @@ const loggedin = ref(false);
 const register = ref(false);
 const value = ref("");
 const secret = ref("");
+const recovery = ref("");
 
 if (cookies.get("access_token") && cookies.get("refresh_token")) {
   loggedin.value = true;
@@ -146,6 +152,8 @@ const handleLogout = () => {
 const closeQR = () => {
   value.value = "";
   register.value = false;
+  password.value = "";
+  confirmPassword.value = "";
 };
 
 async function confirmQR() {
@@ -158,6 +166,26 @@ async function confirmQR() {
       user: username.value,
     }),
   });
+  recovery.value = generateRecoverySecret();
+  console.log(recovery.value);
+  // closeQR();
+}
+
+async function confirmRecovery() {
+  async function recoveryAPI(secret: string, verify: boolean) {
+    return fetch(`${serverURL}/api/recovery`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username.value,
+        secret: secret,
+        verify: verify,
+      }),
+    });
+  }
+  const res = await recoveryAPI(recovery.value, false);
   closeQR();
 }
 
@@ -310,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </form>
         </div>
-        <div v-else class="box" id="qr-code-box">
+        <div v-else-if="!recovery" class="box" id="qr-code-box">
           <h1 class="title">
             Scan the QR code below with your authenticator app
           </h1>
@@ -321,6 +349,16 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="button is-link" @click="confirmQR">
             I have scanned the QR code
           </button>
+        </div>
+        <div v-else class="box">
+          <h1 class="title">Recovery Secret</h1>
+          <p>
+            Please write down the following recovery secret and keep it in a
+            safe place. This secret can be used to recover your account in case
+            you lose access to your 2FA device or forget your password.
+          </p>
+          <p>{{ recovery }}</p>
+          <button class="button is-link" @click="confirmRecovery">Close</button>
         </div>
         <button
           class="modal-close is-large"

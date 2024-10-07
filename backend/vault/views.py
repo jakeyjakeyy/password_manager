@@ -52,6 +52,33 @@ class ConfirmTwoFactor(APIView):
             return Response({"message": "Failed to confirm 2FA"}, status=400)
 
 
+class Recovery(APIView):
+    def post(self, request):
+        try:
+            user = models.User.objects.get(username=request.data["username"])
+            if not user:
+                return Response({"message": "Unauthorized"}, status=401)
+            logger.info(f"User {user.username} found")
+
+            if request.data["verify"]:
+                logger.info("Verifying recovery secret")
+                provided_secret = request.data["secret"]
+                recovery_secret = models.RecoverySecret.objects.get(user=user)
+                is_valid = recovery_secret.check_secret(provided_secret)
+                return Response({"is_valid": is_valid}, status=200)
+            else:
+                logger.info("Setting recovery secret")
+                raw_secret = request.data["secret"]
+                recovery_secret, created = models.RecoverySecret.objects.get_or_create(
+                    user=user
+                )
+                recovery_secret.set_secret(raw_secret)
+                return Response({"message": "Recovery secret set"}, status=200)
+        except Exception as e:
+            logger.error(f"Recovery failed: {str(e)}")
+            return Response({"message": "Failed to set recovery secret"}, status=400)
+
+
 class SaltResponse(APIView):
     authentication_classes = [JWTAuthentication]
 

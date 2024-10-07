@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -12,10 +13,18 @@ def generate_salt():
     return os.urandom(16).hex()
 
 
-class UserSecretEncrypted(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    password = models.CharField(null=False)
-    iv = models.CharField(null=False)
+class RecoverySecret(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="recovery_secret"
+    )
+    secret_hash = models.CharField(max_length=128)
+
+    def set_secret(self, raw_secret):
+        self.secret_hash = make_password(raw_secret)
+        self.save()
+
+    def check_secret(self, raw_secret):
+        return check_password(raw_secret, self.secret_hash)
 
     def __str__(self):
         return self.user.username

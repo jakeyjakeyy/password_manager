@@ -4,3 +4,4 @@ vault.log
 venv/
 backend/files/
 node_modules/
+backend/vault/migrations/
