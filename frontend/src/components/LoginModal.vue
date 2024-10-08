@@ -7,6 +7,7 @@ import {
   storeKey,
   deleteKey,
   generateRecoverySecret,
+  encryptPassword,
 } from "@/utils/Cryptography";
 import Qrcode from "qrcode.vue";
 const { cta } = defineProps(["cta"]);
@@ -23,6 +24,7 @@ const register = ref(false);
 const value = ref("");
 const secret = ref("");
 const recovery = ref("");
+const salt = ref("");
 
 if (cookies.get("access_token") && cookies.get("refresh_token")) {
   loggedin.value = true;
@@ -134,6 +136,7 @@ async function handleRegister() {
   }
   value.value = data.uri;
   secret.value = extractSecret();
+  salt.value = data.salt;
   // We don't automatically log in anymore because the user needs to register their 2FA first
   // register.value = false;
   // handleLogin();
@@ -172,20 +175,38 @@ async function confirmQR() {
 }
 
 async function confirmRecovery() {
-  async function recoveryAPI(secret: string, verify: boolean) {
+  // function to call the recovery API
+  async function recoveryAPI(
+    secret: string,
+    verify: boolean,
+    password?: Uint8Array,
+    iv?: Uint8Array
+  ) {
     return fetch(`${serverURL}/api/recovery`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: username.value,
+        iv: iv,
+        password: password,
         secret: secret,
+        username: username.value,
         verify: verify,
       }),
     });
   }
-  const res = await recoveryAPI(recovery.value, false);
+  // Derive the key from recovery secret
+  const key = await deriveKey(secret.value, salt.value);
+  storeKey(key);
+  // Encrypt the password with our backup key
+  const encrypted = await encryptPassword(password.value);
+  const res = await recoveryAPI(
+    recovery.value,
+    false,
+    encrypted.encryptedPassword,
+    encrypted.iv
+  );
   closeQR();
 }
 

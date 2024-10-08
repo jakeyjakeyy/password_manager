@@ -34,7 +34,9 @@ class Register(APIView):
             totp = pyotp.TOTP(totpDevice.secret)
             uri = totp.provisioning_uri(name=user.username, issuer_name="Vault")
 
-            return Response({"message": "User created", "uri": uri}, status=200)
+            return Response(
+                {"message": "User created", "uri": uri, "salt": salt.salt}, status=200
+            )
         except Exception as e:
             return Response({"message": "User creation failed"}, status=400)
 
@@ -73,6 +75,11 @@ class Recovery(APIView):
                     user=user
                 )
                 recovery_secret.set_secret(raw_secret)
+                password_bytes = ToBytes(request.data["password"])
+                iv_bytes = ToBytes(request.data["iv"])
+                recovery_secret.iv = iv_bytes.hex()
+                recovery_secret.password = password_bytes.hex()
+                recovery_secret.save()
                 return Response({"message": "Recovery secret set"}, status=200)
         except Exception as e:
             logger.error(f"Recovery failed: {str(e)}")
