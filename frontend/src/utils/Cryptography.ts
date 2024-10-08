@@ -83,19 +83,23 @@ async function encryptPassword(plainPassword: string) {
 }
 
 async function decryptPassword(encryptedPassword: Uint8Array, iv: Uint8Array) {
-  const key = await retrieveKey();
-  const encryptedPasswordBuffer = objectToUint8Array(encryptedPassword);
-  const ivBuffer = objectToUint8Array(iv);
-  const decrypted = await window.crypto.subtle.decrypt(
-    {
-      name: "AES-GCM",
-      iv: ivBuffer,
-    },
-    key,
-    encryptedPasswordBuffer
-  );
-  const decoder = new TextDecoder();
-  return decoder.decode(decrypted);
+  try {
+    const key = await retrieveKey();
+    const encryptedPasswordBuffer = objectToUint8Array(encryptedPassword);
+    const ivBuffer = objectToUint8Array(iv);
+    const decrypted = await window.crypto.subtle.decrypt(
+      {
+        name: "AES-GCM",
+        iv: ivBuffer,
+      },
+      key,
+      encryptedPasswordBuffer
+    );
+    const decoder = new TextDecoder();
+    return decoder.decode(decrypted);
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 function objectToUint8Array(obj: any) {
@@ -166,4 +170,5 @@ export {
   encryptFile,
   decryptFile,
   generateRecoverySecret,
+  objectToUint8Array,
 };

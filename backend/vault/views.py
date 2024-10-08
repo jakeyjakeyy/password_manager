@@ -67,7 +67,22 @@ class Recovery(APIView):
                 provided_secret = request.data["secret"]
                 recovery_secret = models.RecoverySecret.objects.get(user=user)
                 is_valid = recovery_secret.check_secret(provided_secret)
-                return Response({"is_valid": is_valid}, status=200)
+                password_bytes = bytes.fromhex(recovery_secret.password)
+                password = {
+                    str(index): byte for index, byte in enumerate(password_bytes)
+                }
+                iv_bytes = bytes.fromhex(recovery_secret.iv)
+                iv = {str(index): byte for index, byte in enumerate(iv_bytes)}
+                if is_valid:
+                    salt = models.ClientKeyDerivationSalt.objects.get(user=user)
+                    return Response(
+                        {
+                            "password": password,
+                            "iv": iv,
+                            "salt": salt.salt,
+                        },
+                        status=200,
+                    )
             else:
                 logger.info("Setting recovery secret")
                 raw_secret = request.data["secret"]

@@ -5,6 +5,7 @@
     "HomeView",
     "Footer",
     "Navbar",
-    "AddEntryModal"
+    "AddEntryModal",
+    "RecoveryView"
   ]
 }

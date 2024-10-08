@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineComponent, ref } from "vue";
-import { useRouter } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
 import {
   deriveKey,
@@ -8,6 +8,7 @@ import {
   deleteKey,
   generateRecoverySecret,
   encryptPassword,
+  decryptPassword,
 } from "@/utils/Cryptography";
 import Qrcode from "qrcode.vue";
 const { cta } = defineProps(["cta"]);
@@ -25,6 +26,7 @@ const value = ref("");
 const secret = ref("");
 const recovery = ref("");
 const salt = ref("");
+const toggleRecovery = ref(false);
 
 if (cookies.get("access_token") && cookies.get("refresh_token")) {
   loggedin.value = true;
@@ -170,7 +172,6 @@ async function confirmQR() {
     }),
   });
   recovery.value = generateRecoverySecret();
-  console.log(recovery.value);
   // closeQR();
 }
 
@@ -196,9 +197,11 @@ async function confirmRecovery() {
       }),
     });
   }
+  // Remove any existing key
+  deleteKey();
   // Derive the key from recovery secret
-  const key = await deriveKey(secret.value, salt.value);
-  storeKey(key);
+  const key = await deriveKey(recovery.value, salt.value);
+  await storeKey(key);
   // Encrypt the password with our backup key
   const encrypted = await encryptPassword(password.value);
   const res = await recoveryAPI(
@@ -207,6 +210,7 @@ async function confirmRecovery() {
     encrypted.encryptedPassword,
     encrypted.iv
   );
+  deleteKey();
   closeQR();
 }
 
@@ -352,6 +356,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <div class="field">
               <div class="control">
+                <div class="forgot-password">
+                  <RouterLink to="/recovery">Forgot Password?</RouterLink>
+                </div>
                 <button class="button is-link is-fullwidth" type="submit">
                   {{ register ? "Register" : "Login" }}
                 </button>
