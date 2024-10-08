@@ -6,6 +6,7 @@
     "Footer",
     "Navbar",
     "AddEntryModal",
-    "RecoveryView"
+    "RecoveryView",
+    "AccountView"
   ]
 }

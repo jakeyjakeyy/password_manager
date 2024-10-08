@@ -26,3 +26,11 @@
   --bulma-info-l: 61%;
   --bulma-scheme-h: 144;
 }
+
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  font-size: 3rem;
+}
