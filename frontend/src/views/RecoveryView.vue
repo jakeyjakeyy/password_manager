@@ -6,8 +6,10 @@ import {
   storeKey,
   objectToUint8Array,
 } from "@/utils/Cryptography";
+import { RouterLink, useRouter } from "vue-router";
 import { ref } from "vue";
 const serverURL = import.meta.env.VITE_BACKEND_URL;
+const router = useRouter();
 const username = ref("");
 const secret = ref("");
 
@@ -33,8 +35,8 @@ async function recover() {
       objectToUint8Array(encryptedPassword),
       objectToUint8Array(data.iv)
     );
-    console.log(decryptedPassword);
     alert(`Recovered password: ${decryptedPassword}`);
+    router.push("/");
   } else {
     alert("Failed to recover account.");
   }
