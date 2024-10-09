@@ -45,4 +45,9 @@
   justify-content: center;
   gap: 1rem;
 }
+
+a {
+  font-weight: bold;
+  border-bottom: 2px solid var(--bulma-primary);
+}
 </style>

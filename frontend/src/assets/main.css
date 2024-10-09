@@ -59,3 +59,10 @@ html {
   width: 100%;
   font-size: 3rem;
 }
+
+.primary-text-shadow {
+  text-shadow: 0 0 10px var(--bulma-text), 0 0 20px var(--bulma-text),
+    0 0 30px var(--bulma-primary), 0 0 40px var(--bulma-primary),
+    0 0 50px var(--bulma-primary), 0 0 60px var(--bulma-primary),
+    0 0 70px var(--bulma-primary);
+}

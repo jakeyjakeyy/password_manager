@@ -107,7 +107,6 @@ onMounted(() => {
 header {
   position: fixed;
   z-index: 1000;
-  background-color: var(--bulma-background);
 }
 .browser {
   padding-top: 3.25rem;

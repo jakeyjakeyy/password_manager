@@ -31,7 +31,7 @@
     <div class="content">
       <div class="item">
         <div class="item-title">
-          <h3 class="title is-3 has-text-primary">Encryption</h3>
+          <h3 class="title is-3">Encryption</h3>
         </div>
         <div class="item-content">
           <p class="subtitle is-5">
@@ -43,7 +43,7 @@
       </div>
       <div class="item">
         <div class="item-title">
-          <h3 class="title is-3 has-text-primary">Key Derivation</h3>
+          <h3 class="title is-3">Key Derivation</h3>
         </div>
         <div class="item-content">
           <p class="subtitle is-5">
@@ -55,7 +55,7 @@
       </div>
       <div class="item">
         <div class="item-title">
-          <h3 class="title is-3 has-text-primary">Secure Storage</h3>
+          <h3 class="title is-3">Secure Storage</h3>
         </div>
         <div class="item-content">
           <p class="subtitle is-5">
@@ -67,7 +67,7 @@
       </div>
       <div class="item">
         <div class="item-title">
-          <h3 class="title is-3 has-text-primary">Two-Factor Authentication</h3>
+          <h3 class="title is-3">Two-Factor Authentication</h3>
         </div>
         <div class="item-content">
           <p class="subtitle is-5">
@@ -91,6 +91,7 @@
   text-align: center;
   gap: 2rem;
 }
+
 .header {
   display: flex;
   flex-direction: column;
@@ -115,7 +116,25 @@
   justify-content: center;
 }
 
+.item-title .title {
+  color: var(--bulma-text);
+  padding: 0.5rem;
+  border-image: linear-gradient(
+      to right,
+      var(--bulma-primary) 0%,
+      var(--bulma-info) 100%
+    )
+    1;
+  border-width: 0 0 4px 0;
+  border-style: solid;
+  padding: 5px;
+}
+
 .bold {
   font-weight: bold;
+}
+
+a:hover {
+  border-bottom: 2px solid var(--bulma-primary);
 }
 </style>
