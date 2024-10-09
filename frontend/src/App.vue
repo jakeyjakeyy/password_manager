@@ -107,7 +107,7 @@ onMounted(() => {
 header {
   position: fixed;
   z-index: 1000;
-  opacity: 0.9;
+  background-color: var(--bulma-background);
 }
 .browser {
   padding-top: 3.25rem;
@@ -119,7 +119,7 @@ a {
   color: var(--bulma-text);
 }
 .is-active {
-  background-color: var(--bulma-background-color);
+  background-color: var(--bulma-background);
   border: var(--bulma-primary) 1px solid;
   color: var(--bulma-primary);
 }
@@ -127,5 +127,11 @@ a {
 .navbar {
   width: 100vw;
   padding: 0 1rem;
+  background-color: hsla(
+    var(--bulma-scheme-h),
+    var(--bulma-scheme-s),
+    var(--bulma-background-l),
+    0.9
+  );
 }
 </style>

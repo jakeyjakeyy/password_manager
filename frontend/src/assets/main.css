@@ -49,6 +49,7 @@ html {
   --bulma-info-l: 64%;
   --bulma-scheme-h: 210;
   --bulma-scheme-s: 50%;
+  background-color: var(--bulma-background);
 }
 
 .title {
