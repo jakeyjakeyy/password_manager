@@ -29,6 +29,11 @@ onMounted(() => {
   padding: 0 10%;
   min-height: 100vh;
   height: fit-content;
+  background-image: linear-gradient(
+    to right bottom,
+    var(--bulma-background) 40%,
+    var(--bulma-background-active) 70%
+  );
 }
 
 @media (max-width: 768px) {

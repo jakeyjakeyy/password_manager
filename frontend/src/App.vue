@@ -107,6 +107,7 @@ onMounted(() => {
 header {
   position: fixed;
   z-index: 1000;
+  opacity: 0.9;
 }
 .browser {
   padding-top: 3.25rem;
