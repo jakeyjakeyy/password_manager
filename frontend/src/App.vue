@@ -63,7 +63,9 @@ onMounted(() => {
                 <RouterLink to="/account" class="navbar-item"
                   >Account</RouterLink
                 >
-                <a class="navbar-item">Settings</a>
+                <RouterLink to="/settings" class="navbar-item"
+                  >Settings</RouterLink
+                >
                 <hr class="navbar-divider" />
                 <a
                   class="navbar-item"

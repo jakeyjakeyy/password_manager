@@ -7,6 +7,7 @@
     "Navbar",
     "AddEntryModal",
     "RecoveryView",
-    "AccountView"
+    "AccountView",
+    "SettingsView"
   ]
 }

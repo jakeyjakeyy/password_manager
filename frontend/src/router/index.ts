@@ -4,6 +4,7 @@ import AboutView from "../views/AboutView.vue";
 import VaultView from "../views/VaultView.vue";
 import RecoveryView from "../views/RecoveryView.vue";
 import AccountView from "@/views/AccountView.vue";
+import SettingsView from "@/views/SettingsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,11 @@ const router = createRouter({
       path: "/account",
       name: "account",
       component: AccountView,
+    },
+    {
+      path: "/settings",
+      name: "settings",
+      component: SettingsView,
     },
     {
       path: "/vault",
