@@ -12,23 +12,26 @@
           <span
             ><a
               href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-175Br1.pdf"
+              class="bold"
               target="_blank"
               >National Institute of Standards and Technology (NIST)</a
             ></span
           >, The Vault ensure that your passwords and files remain secure and
           private.
         </p>
-        <p class="subtitle is-4 has-text-info">
-          Unencrypted/plaintext data is NEVER sent to, stored, or viewed by the
-          servers. All encryption, decryption, and key derivation is done
-          locally for maximum security.
+        <p class="subtitle is-4 has-text-info bold">
+          Unencrypted/plaintext passwords and files are NEVER sent to, stored,
+          or viewed by the servers.
+          <br />
+          All encryption, decryption, and key derivation is done locally for
+          maximum security.
         </p>
       </div>
     </div>
     <div class="content">
       <div class="item">
         <div class="item-title">
-          <h3 class="title is-3">Encryption</h3>
+          <h3 class="title is-3 has-text-primary">Encryption</h3>
         </div>
         <div class="item-content">
           <p class="subtitle is-5">
@@ -40,7 +43,7 @@
       </div>
       <div class="item">
         <div class="item-title">
-          <h3 class="title is-3">Key Derivation</h3>
+          <h3 class="title is-3 has-text-primary">Key Derivation</h3>
         </div>
         <div class="item-content">
           <p class="subtitle is-5">
@@ -52,7 +55,7 @@
       </div>
       <div class="item">
         <div class="item-title">
-          <h3 class="title is-3">Secure Storage</h3>
+          <h3 class="title is-3 has-text-primary">Secure Storage</h3>
         </div>
         <div class="item-content">
           <p class="subtitle is-5">
@@ -64,7 +67,7 @@
       </div>
       <div class="item">
         <div class="item-title">
-          <h3 class="title is-3">Two-Factor Authentication</h3>
+          <h3 class="title is-3 has-text-primary">Two-Factor Authentication</h3>
         </div>
         <div class="item-content">
           <p class="subtitle is-5">
@@ -110,5 +113,9 @@
   align-items: start;
   text-align: start;
   justify-content: center;
+}
+
+.bold {
+  font-weight: bold;
 }
 </style>
