@@ -9,7 +9,7 @@
   height: 100vh;
 }
 
-:root {
+/* :root {
   --text: #060d09;
   --background: #f5faf7;
   --primary: #57ae74;
@@ -25,6 +25,25 @@
   --bulma-info-s: 35%;
   --bulma-info-l: 61%;
   --bulma-scheme-h: 144;
+} */
+
+:root {
+  --text: #060708;
+  --background: #f7f8f9;
+  --primary: #90acc3;
+  --secondary: #c7b1be;
+  --accent: #b39795;
+  --bulma-primary-h: 207deg;
+  --bulma-primary-s: 30%;
+  --bulma-primary-l: 66%;
+  --bulma-link-h: 325deg;
+  --bulma-link-s: 16%;
+  --bulma-link-l: 74%;
+  --bulma-info-h: 4deg;
+  --bulma-info-s: 16%;
+  --bulma-info-l: 64%;
+  --bulma-scheme-h: 210;
+  --bulma-scheme-s: 50%;
 }
 
 .title {
