@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import ThemeSelector from "@/components/Settings/ThemeSelector.vue";
 import { onMounted } from "vue";
-
 onMounted(() => {
   document.title = "Settings";
 });
@@ -10,6 +10,9 @@ onMounted(() => {
   <div class="settings-container">
     <div class="header">
       <h1 class="title">Settings</h1>
+    </div>
+    <div class="content">
+      <ThemeSelector />
     </div>
   </div>
 </template>

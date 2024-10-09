@@ -5,6 +5,19 @@ import TheFooter from "./components/TheFooter.vue";
 import { onMounted, ref } from "vue";
 const username = ref<string | null>(null);
 
+// Theme initialization
+const theme = localStorage.getItem("theme");
+if (theme) {
+  document.documentElement.setAttribute(
+    "data-theme",
+    localStorage.getItem("theme") || ""
+  );
+} else {
+  window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? document.documentElement.setAttribute("data-theme", "dark")
+    : document.documentElement.setAttribute("data-theme", "light");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const $navbarBurgers = Array.prototype.slice.call(
     document.querySelectorAll(".navbar-burger"),
