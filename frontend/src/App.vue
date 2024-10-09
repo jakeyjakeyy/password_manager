@@ -112,6 +112,7 @@ header {
   padding-top: 3.25rem;
   width: 100%;
   height: 100%;
+  overflow: auto;
 }
 a {
   color: var(--bulma-text);
