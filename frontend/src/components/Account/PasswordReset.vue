@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useCookies } from "vue3-cookies";
-import { decryptPassword, decryptFile } from "@/utils/Cryptography";
+import * as cryptography from "@/utils/Cryptography";
 import { Retrieve } from "@/utils/VaultEntry";
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
@@ -28,15 +28,68 @@ async function resetPassword() {
     // Retrieve vault entries
     const vaultEntries = await Retrieve();
     let decryptedEntries = [];
+    // Decrypt vault entries and their files
     for (const entry of vaultEntries) {
+      let files = [];
       // Decrypt password
-      const decryptedPassword = await decryptPassword(entry.password, entry.iv);
+      const decryptedPassword = await cryptography.decryptPassword(
+        entry.password,
+        entry.iv
+      );
+      for (const file of entry.files) {
+        const decryptedFile = await cryptography.decryptFile(
+          file.file,
+          file.iv,
+          file.name
+        );
+        console.log(await decryptedFile.arrayBuffer());
+        const url = URL.createObjectURL(decryptedFile);
+        let fileObj = { file: decryptedFile, url: url, id: file.id };
+        files.push(fileObj);
+      }
       decryptedEntries.push({
         ...entry,
         password: decryptedPassword,
+        files: files,
       });
     }
     console.log(decryptedEntries);
+    // Get account's salt
+    const saltResponse = await fetch(`${serverURL}/api/salt`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${cookies.get("access_token")}`,
+      },
+    });
+    const saltData = await saltResponse.json();
+    const salt = saltData.salt;
+    // Derive new key from new password
+    const newKey = await cryptography.deriveKey(newPassword.value, salt);
+    await cryptography.deleteKey();
+    await cryptography.storeKey(newKey);
+    // Reencrypt vault entries
+    let encryptedEntries = [];
+    let encryptedFiles = [];
+    for (const entry of decryptedEntries) {
+      const encryptedPassword = await cryptography.encryptPassword(
+        entry.password
+      );
+      entry.password = encryptedPassword.encryptedPassword;
+      entry.iv = encryptedPassword.iv;
+      for (const file of entry.files) {
+        console.log(file);
+        const encryptedFile = await cryptography.encryptFile(file.file);
+        encryptedFiles.push({
+          file: encryptedFile.encryptedFile,
+          iv: encryptedFile.iv,
+          name: file.file.name,
+        });
+      }
+      entry.files = encryptedFiles;
+      encryptedEntries.push(entry);
+    }
+    console.log(encryptedEntries);
+    // Send reencrypted vault entries to server
   } else {
     alert("Failed to reset password. Please try again.");
   }
