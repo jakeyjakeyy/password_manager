@@ -6,6 +6,7 @@
           <a
             href="https://www.github.com/jakeyjakeyy/password_manager"
             target="_blank"
+            aria-label="GitHub"
           >
             <v-icon name="bi-github" scale="1.25" />
           </a>

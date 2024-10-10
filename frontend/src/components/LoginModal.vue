@@ -263,6 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
         class="button js-modal-trigger cta is-primary"
         data-target="cta-modal"
         @click="register = true"
+        aria-label="Register for Free"
       >
         Register for Free
       </button>
@@ -270,6 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
         class="button js-modal-trigger cta is-info"
         data-target="cta-modal"
         @click="register = false"
+        aria-label="Login"
       >
         Login
       </button>
