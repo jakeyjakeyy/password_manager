@@ -51,14 +51,6 @@ onMounted(async () => {
     // initialize list sorting
     handleSort();
   }
-
-  // Timer to check for token expiration
-  setInterval(() => {
-    if (!checkToken()) {
-      // Redirect to login if token is invalid
-      window.location.href = "/";
-    }
-  }, 60000);
 });
 
 const handleSearch = () => {

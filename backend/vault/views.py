@@ -101,6 +101,25 @@ class Recovery(APIView):
             return Response({"message": "Failed to set recovery secret"}, status=400)
 
 
+class ResetPassword(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        try:
+            user = request.user
+            oldPassword = request.data["oldPassword"]
+            newPassword = request.data["newPassword"]
+            if not user.check_password(oldPassword):
+                return Response({"message": "Unauthorized"}, status=401)
+
+            user.set_password(newPassword)
+            user.save()
+            return Response({"message": "Password reset"}, status=200)
+        except Exception as e:
+            logger.error(f"Password reset failed: {str(e)}")
+            return Response({"message": "Failed to reset password"}, status=400)
+
+
 class SaltResponse(APIView):
     authentication_classes = [JWTAuthentication]
 

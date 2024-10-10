@@ -1,11 +1,24 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
+const serverURL = import.meta.env.VITE_BACKEND_URL;
 const oldPassword = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
 
 async function resetPassword() {
-  console.log("Resetting password...");
+  const res = await fetch(`${serverURL}/api/recovery/password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${cookies.get("access_token")}`,
+    },
+    body: JSON.stringify({
+      oldPassword: oldPassword.value,
+      newPassword: newPassword.value,
+    }),
+  });
 }
 </script>
 

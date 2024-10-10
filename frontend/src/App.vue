@@ -3,6 +3,7 @@ import { RouterLink, RouterView } from "vue-router";
 import LoginModal from "./components/LoginModal.vue";
 import TheFooter from "./components/TheFooter.vue";
 import { onMounted, ref } from "vue";
+import { checkToken } from "./utils/RefreshToken";
 const username = ref<string | null>(null);
 
 // Theme initialization
@@ -43,6 +44,16 @@ onMounted(() => {
       username.value = null;
     }
   }, 100);
+
+  // Timer to check for token expiration
+  setInterval(() => {
+    if (!checkToken()) {
+      if (window.location.pathname !== "/") {
+        // Redirect to login if token is invalid
+        window.location.href = "/";
+      }
+    }
+  }, 60000);
 });
 </script>
 

@@ -19,4 +19,5 @@ urlpatterns = [
     path("vault/files/add", FileAdd.as_view(), name="file-add"),
     path("vault/files/delete", FileDelete.as_view(), name="file-delete"),
     path("recovery", Recovery.as_view(), name="recovery"),
+    path("recovery/password", ResetPassword.as_view(), name="reset-password"),
 ]

@@ -4,10 +4,9 @@ import { checkToken } from "@/utils/RefreshToken";
 import PasswordReset from "@/components/Account/PasswordReset.vue";
 
 onMounted(() => {
-  // TODO reenable check before deployment
-  // if (!checkToken()) {
-  //   window.location.href = "/";
-  // }
+  if (!checkToken()) {
+    window.location.href = "/";
+  }
   document.title = "Account";
 });
 </script>
