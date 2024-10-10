@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useCookies } from "vue3-cookies";
+import { decryptPassword, decryptFile } from "@/utils/Cryptography";
+import { Retrieve } from "@/utils/VaultEntry";
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 const oldPassword = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
+const loading = ref(false);
 
 async function resetPassword() {
   const res = await fetch(`${serverURL}/api/recovery/password`, {
@@ -19,11 +22,29 @@ async function resetPassword() {
       newPassword: newPassword.value,
     }),
   });
+  if (res.ok) {
+    // Begin process of reencrypting vault entries
+    loading.value = true;
+    // Retrieve vault entries
+    const vaultEntries = await Retrieve();
+    let decryptedEntries = [];
+    for (const entry of vaultEntries) {
+      // Decrypt password
+      const decryptedPassword = await decryptPassword(entry.password, entry.iv);
+      decryptedEntries.push({
+        ...entry,
+        password: decryptedPassword,
+      });
+    }
+    console.log(decryptedEntries);
+  } else {
+    alert("Failed to reset password. Please try again.");
+  }
 }
 </script>
 
 <template>
-  <div class="reset-password-container">
+  <div v-if="!loading" class="reset-password-container">
     <h1 class="title">Reset Password</h1>
     <form @submit.prevent>
       <div class="field">
@@ -76,6 +97,10 @@ async function resetPassword() {
         </button>
       </div>
     </form>
+  </div>
+  <div v-else class="loading-container">
+    <!-- <Loading /> -->
+    <p>Loading...</p>
   </div>
 </template>
 

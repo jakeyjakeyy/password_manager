@@ -8,6 +8,7 @@
     "AddEntryModal",
     "RecoveryView",
     "AccountView",
-    "SettingsView"
+    "SettingsView",
+    "PasswordReset"
   ]
 }
