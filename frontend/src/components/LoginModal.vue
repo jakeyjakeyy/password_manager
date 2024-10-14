@@ -91,14 +91,6 @@ async function handleLogin() {
     return;
   }
 
-  cookies.set("refresh_token", data.refresh);
-  cookies.set("access_token", data.access);
-  localStorage.setItem("username", username.value);
-  loggedin.value = true;
-  username.value = "";
-  password.value = "";
-  confirmPassword.value = "";
-
   // Get our salt
   const saltResponse = await fetch(`${serverURL}/api/salt`, {
     method: "GET",
@@ -110,6 +102,14 @@ async function handleLogin() {
   // Derive our key
   const key = await deriveKey(password.value, saltData.salt);
   storeKey(key);
+
+  cookies.set("refresh_token", data.refresh);
+  cookies.set("access_token", data.access);
+  localStorage.setItem("username", username.value);
+  loggedin.value = true;
+  username.value = "";
+  password.value = "";
+  confirmPassword.value = "";
 
   // Event listener to delete the derived key and trigger logout when the user leaves the page
   window.addEventListener("beforeunload", (event) => {

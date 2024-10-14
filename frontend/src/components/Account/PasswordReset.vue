@@ -42,7 +42,6 @@ async function resetPassword() {
           file.iv,
           file.name
         );
-        console.log(await decryptedFile.arrayBuffer());
         const url = URL.createObjectURL(decryptedFile);
         let fileObj = { file: decryptedFile, url: url, id: file.id };
         files.push(fileObj);
@@ -53,7 +52,6 @@ async function resetPassword() {
         files: files,
       });
     }
-    console.log(decryptedEntries);
     // Get account's salt
     const saltResponse = await fetch(`${serverURL}/api/salt`, {
       method: "GET",
@@ -77,19 +75,35 @@ async function resetPassword() {
       entry.password = encryptedPassword.encryptedPassword;
       entry.iv = encryptedPassword.iv;
       for (const file of entry.files) {
-        console.log(file);
         const encryptedFile = await cryptography.encryptFile(file.file);
         encryptedFiles.push({
           file: encryptedFile.encryptedFile,
           iv: encryptedFile.iv,
           name: file.file.name,
+          id: file.id,
         });
       }
       entry.files = encryptedFiles;
       encryptedEntries.push(entry);
     }
-    console.log(encryptedEntries);
+
     // Send reencrypted vault entries to server
+    const batchRes = await fetch(`${serverURL}/api/vault/edit-batch`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cookies.get("access_token")}`,
+      },
+      body: JSON.stringify({
+        entries: encryptedEntries,
+      }),
+    });
+    if (batchRes.ok) {
+      alert("Password reset successfully.");
+    } else {
+      alert("Failed to reset password. Please try again.");
+    }
+    loading.value = false;
   } else {
     alert("Failed to reset password. Please try again.");
   }

@@ -336,18 +336,19 @@ class FileAdd(APIView):
     def post(self, request):
         try:
             entry = models.VaultEntry.objects.get(id=request.data["id"])
+            file = request.data["file"]
+            fileBytes = ToBytes(file)
+            name = request.data["name"]
+            iv = request.data["iv"]
+            ivBytes = ToBytes(iv)
             if entry.user != request.user:
                 return Response({"message": "Unauthorized"}, status=401)
-            fileBytes = ToBytes(request.data["file"])
             # check file extension
-            if not request.data["name"].endswith(
-                (".txt", ".csv", ".json", ".pdf", ".zip")
-            ):
+            if not name.endswith((".txt", ".csv", ".json", ".pdf", ".zip")):
                 return Response({"message": "Invalid file type"}, status=422)
             # make sure fize size below 5MB
             if len(fileBytes) > 5 * 1024 * 1024:
                 return Response({"message": "Content Too Large"}, status=413)
-            ivBytes = ToBytes(request.data["iv"])
             file = models.fileEntry.objects.create(
                 VaultEntry=entry,
                 file=fileBytes.hex(),
@@ -372,3 +373,49 @@ class FileDelete(APIView):
             return Response({"message": "File deleted"}, status=200)
         except Exception as e:
             return Response({"message": "Failed to delete file"}, status=400)
+
+
+class VaultEditBatch(APIView):
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        try:
+            entries = request.data["entries"]
+            errors = []
+            for editedEntry in entries:
+                try:
+                    entry = models.VaultEntry.objects.get(id=editedEntry["id"])
+                    if entry.user != request.user:
+                        errors.append(
+                            {
+                                "id": editedEntry["id"],
+                                "message": "Unauthorized",
+                            }
+                        )
+                        continue
+                    password_bytes = ToBytes(editedEntry["password"])
+                    iv_bytes = ToBytes(editedEntry["iv"])
+                    entry.name = editedEntry["name"]
+                    entry.username = editedEntry["username"]
+                    logger.info(entry.username)
+                    entry.password = password_bytes.hex()
+                    entry.iv = iv_bytes.hex()
+                    entry.save()
+
+                    for file in editedEntry["files"]:
+                        db_file = models.fileEntry.objects.get(id=file["id"])
+                        db_file.file = ToBytes(file["file"]).hex()
+                        db_file.name = file["name"]
+                        db_file.iv = ToBytes(file["iv"]).hex()
+                        db_file.save()
+
+                except Exception as e:
+                    errors.append({"id": entry["id"], "message": str(e)})
+            if len(errors) > 0:
+                return Response(
+                    {"message": "Failed to edit entries", "errors": errors}, status=400
+                )
+            return Response({"message": "Success"}, status=200)
+        except Exception as e:
+            logger.error(f"Failed to edit entries: {str(e)}")
+            return Response({"message": "Failed to edit entries"}, status=400)

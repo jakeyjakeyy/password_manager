@@ -111,8 +111,6 @@ function objectToUint8Array(obj: any) {
 }
 
 async function encryptFile(file: File) {
-  console.log(typeof file);
-  console.log(file);
   const key = await retrieveKey();
   const iv = window.crypto.getRandomValues(new Uint8Array(12));
   const encrypted = await window.crypto.subtle.encrypt(
