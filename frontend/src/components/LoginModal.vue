@@ -25,6 +25,7 @@ const register = ref(false);
 const value = ref("");
 const secret = ref("");
 const recovery = ref("");
+const recoveryUrl = ref("");
 const salt = ref("");
 const toggleRecovery = ref(false);
 
@@ -171,7 +172,11 @@ async function confirmQR() {
       user: username.value,
     }),
   });
+  // Generate recovery secret, triggering next step
   recovery.value = generateRecoverySecret();
+  const blob = new Blob([recovery.value], { type: "text/plain" });
+  recoveryUrl.value = URL.createObjectURL(blob);
+  console.log(recoveryUrl.value);
   // closeQR();
 }
 
@@ -381,14 +386,26 @@ document.addEventListener("DOMContentLoaded", () => {
           </button>
         </div>
         <div v-else class="box">
-          <h1 class="title">Recovery Secret</h1>
-          <p>
-            Please write down the following recovery secret and keep it in a
-            safe place. This secret can be used to recover your account in case
-            you lose access to your 2FA device or forget your password.
-          </p>
-          <p>{{ recovery }}</p>
-          <button class="button is-link" @click="confirmRecovery">Close</button>
+          <div class="recovery-container">
+            <h1 class="title">Recovery Secret</h1>
+            <p>
+              Please download the following recovery secret and store it in a
+              safe place. This secret is the
+              <span
+                class="has-text-info"
+                style="font-style: italic; font-weight: bold"
+                >ONLY</span
+              >
+              way recover your account in case you lose access to your 2FA
+              device or forget your password.
+            </p>
+            <a :href="recoveryUrl" download="vault-recovery-secret.txt">
+              Download Recovery Secret
+            </a>
+            <button class="button is-link" @click="confirmRecovery">
+              Close
+            </button>
+          </div>
         </div>
         <button
           class="modal-close is-large"
@@ -472,5 +489,12 @@ document.addEventListener("DOMContentLoaded", () => {
   to {
     transform: translateX(0);
   }
+}
+
+.recovery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 </style>
