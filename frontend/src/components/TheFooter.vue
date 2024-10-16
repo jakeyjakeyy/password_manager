@@ -12,7 +12,7 @@
           </a>
         </div>
       </div>
-      <div class="footer-version">unreleased</div>
+      <div class="footer-version">v1.0.0</div>
     </div>
   </footer>
 </template>
