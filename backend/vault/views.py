@@ -18,9 +18,11 @@ logger = logging.getLogger(__name__)
 class Register(APIView):
     def post(self, request):
         try:
-            user = models.User.objects.create(
+            user, created = models.User.objects.get_or_create(
                 username=request.data["username"],
             )
+            if not created:
+                return Response({"error": "User already exists"}, status=409)
             user.set_password(request.data["password"])
             user.save()
             salt = models.ClientKeyDerivationSalt.objects.create(user=user)
@@ -38,7 +40,7 @@ class Register(APIView):
                 {"message": "User created", "uri": uri, "salt": salt.salt}, status=200
             )
         except Exception as e:
-            return Response({"message": "User creation failed"}, status=400)
+            return Response({"error": "User creation failed"}, status=400)
 
 
 class ConfirmTwoFactor(APIView):
