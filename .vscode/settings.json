@@ -9,6 +9,7 @@
     "RecoveryView",
     "AccountView",
     "SettingsView",
-    "PasswordReset"
+    "PasswordReset",
+    "LoginModal"
   ]
 }

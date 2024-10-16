@@ -84,8 +84,8 @@ async function handleLogin() {
   });
 
   const data = await response.json();
-  if (data.non_field_errors) {
-    alert(data.non_field_errors);
+  if (data.detail || data.non_field_errors) {
+    alert(data.detail ? data.detail : data.non_field_errors);
     username.value = "";
     password.value = "";
     twoFA.value = "";
