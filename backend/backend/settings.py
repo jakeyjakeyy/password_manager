@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-q&xm+#pi#&9+xl_g883o-rii2u17p_p6xxg@n_xtfypoa98hs+"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 FIELD_ENCRYPTION_KEY = os.getenv("FIELD_ENCRYPTION_KEY")
 
@@ -170,7 +170,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.ScopedRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {"strict": "5/hour"},
+    "DEFAULT_THROTTLE_RATES": {"strict": "2/hour"},
 }
 
 SIMPLE_JWT = {

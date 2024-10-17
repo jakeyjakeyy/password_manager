@@ -315,7 +315,7 @@ class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
 
         # TODO Remove before prodiction
         # debug: Returning here to skip 2FA check
-        # return data
+        return data
 
         # Get the 2FA token from the request
         two_fa_token = self.context["request"].data.get("twoFA", None)
