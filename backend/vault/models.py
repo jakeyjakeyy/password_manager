@@ -20,6 +20,8 @@ class RecoverySecret(models.Model):
     secret_hash = models.CharField(max_length=128)
     password = models.CharField()
     iv = models.CharField()
+    attempts = models.IntegerField(default=0)
+    last_attempt = models.DateTimeField(null=True)
 
     def set_secret(self, raw_secret):
         self.secret_hash = make_password(raw_secret)

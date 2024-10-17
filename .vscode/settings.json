@@ -10,6 +10,7 @@
     "AccountView",
     "SettingsView",
     "PasswordReset",
-    "LoginModal"
+    "LoginModal",
+    "views.py"
   ]
 }

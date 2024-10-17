@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from vault import models
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -57,6 +58,8 @@ class ConfirmTwoFactor(APIView):
 
 
 class Recovery(APIView):
+    throttle_scope = "strict"
+
     def post(self, request):
         try:
             user = models.User.objects.get(username=request.data["username"])
@@ -68,6 +71,13 @@ class Recovery(APIView):
                 logger.info("Verifying recovery secret")
                 provided_secret = request.data["secret"]
                 recovery_secret = models.RecoverySecret.objects.get(user=user)
+                if recovery_secret.attempts >= 3:
+                    if time.time() - recovery_secret.last_attempt.timestamp() < 60 * 60:
+                        return Response(
+                            {"message": "Too many attempts. Try again later"},
+                            status=429,
+                        )
+                    recovery_secret.attempts = 0
                 is_valid = recovery_secret.check_secret(provided_secret)
                 password_bytes = bytes.fromhex(recovery_secret.password)
                 password = {
@@ -85,6 +95,11 @@ class Recovery(APIView):
                         },
                         status=200,
                     )
+                else:
+                    recovery_secret.attempts += 1
+                    recovery_secret.last_attempt = time.strftime("%Y-%m-%d %H:%M:%S")
+                    recovery_secret.save()
+                    return Response({"message": "Unauthorized"}, status=401)
             else:
                 logger.info("Setting recovery secret")
                 raw_secret = request.data["secret"]
