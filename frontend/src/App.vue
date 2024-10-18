@@ -121,9 +121,10 @@ header {
 }
 .browser {
   padding-top: 3.25rem;
-  width: 100%;
+  width: 100vw;
   height: 100%;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 a {
   color: var(--bulma-text);
