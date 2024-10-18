@@ -313,9 +313,8 @@ class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
             user.delete()
             raise serializers.ValidationError(self.default_error_messages["no_2fa"])
 
-        # TODO Remove before prodiction
         # debug: Returning here to skip 2FA check
-        return data
+        # return data
 
         # Get the 2FA token from the request
         two_fa_token = self.context["request"].data.get("twoFA", None)
