@@ -203,7 +203,7 @@ async function confirmRecovery() {
     });
   }
   // Remove any existing key
-  deleteKey();
+  await deleteKey();
   // Derive the key from recovery secret
   const key = await deriveKey(recovery.value, salt.value);
   await storeKey(key);
@@ -215,7 +215,7 @@ async function confirmRecovery() {
     encrypted.encryptedPassword,
     encrypted.iv
   );
-  deleteKey();
+  await deleteKey();
   closeQR();
 }
 

@@ -1,4 +1,4 @@
-import { openDB } from "idb";
+import { openDB, deleteDB } from "idb";
 
 async function deriveKey(
   masterPassword: string,
@@ -32,14 +32,17 @@ async function deriveKey(
 }
 
 async function storeKey(key: CryptoKey) {
-  const db = await openDB("myDatabase", 2, {
+  await deleteDB("vault");
+  const db = await openDB("vault", 1, {
     upgrade(db) {
-      db.createObjectStore("keys", { keyPath: "id" });
+      if (!db.objectStoreNames.contains("keys")) {
+        db.createObjectStore("keys", { keyPath: "id" });
+      }
     },
   });
 
   // Delete the old key if it exists
-  await db.delete("keys", "encryptionKey");
+  await deleteKey();
 
   await db.add("keys", {
     id: "encryptionKey",
@@ -48,12 +51,15 @@ async function storeKey(key: CryptoKey) {
 }
 
 async function deleteKey() {
-  const db = await openDB("myDatabase", 2);
+  const db = await openDB("vault");
+  if (!db.objectStoreNames.contains("keys")) {
+    return;
+  }
   await db.delete("keys", "encryptionKey");
 }
 
 async function retrieveKey() {
-  const db = await openDB("myDatabase", 2);
+  const db = await openDB("vault");
   const keyData = await db.get("keys", "encryptionKey");
   return window.crypto.subtle.importKey(
     "jwk",
