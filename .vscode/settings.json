@@ -12,6 +12,7 @@
     "PasswordReset",
     "LoginModal",
     "views.py",
-    "settings.py"
+    "settings.py",
+    "Utils"
   ]
 }

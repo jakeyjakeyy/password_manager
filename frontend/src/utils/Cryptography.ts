@@ -32,7 +32,7 @@ async function deriveKey(
 }
 
 async function storeKey(key: CryptoKey) {
-  const db = await openDB("myDatabase", 1, {
+  const db = await openDB("myDatabase", 2, {
     upgrade(db) {
       db.createObjectStore("keys", { keyPath: "id" });
     },
@@ -48,12 +48,12 @@ async function storeKey(key: CryptoKey) {
 }
 
 async function deleteKey() {
-  const db = await openDB("myDatabase", 1);
+  const db = await openDB("myDatabase", 2);
   await db.delete("keys", "encryptionKey");
 }
 
 async function retrieveKey() {
-  const db = await openDB("myDatabase", 1);
+  const db = await openDB("myDatabase", 2);
   const keyData = await db.get("keys", "encryptionKey");
   return window.crypto.subtle.importKey(
     "jwk",
