@@ -8,7 +8,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=vault
 
     volumes:
       - ./data/db:/var/lib/postgresql/data
@@ -42,7 +42,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=vault
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
 
     depends_on:
