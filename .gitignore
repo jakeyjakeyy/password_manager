@@ -6,3 +6,4 @@ backend/files/
 node_modules/
 backend/vault/migrations/
 backup/
+Dockerfile
