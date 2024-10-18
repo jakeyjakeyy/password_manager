@@ -36,8 +36,8 @@ docker-compose build --no-cache
 
 # Step 2: Tag frontend and backend images
 echo -e "${YELLOW}Step 2: Tagging frontend and backend images...${NC}"
-docker tag "webportfolio_frontend:latest" "docker.io/jakerichards/vault_frontend"
-docker tag "webportfolio_backend:latest" "docker.io/jakerichards/vault_backend"
+docker tag "password_manager-frontend:latest" "docker.io/jakerichards/vault_frontend"
+docker tag "password_manager-backend:latest" "docker.io/jakerichards/vault_backend"
 
 # Step 3: Push frontend/backend images
 echo -e "${YELLOW}Step 3: Pushing frontend/backend images...${NC}"
