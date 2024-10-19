@@ -28,15 +28,19 @@ footer {
 
 .footer-container {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 100%;
 }
 
+.footer-icons {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+}
+
 .footer-version {
-  position: absolute;
-  right: 1rem;
+  margin-left: auto;
 }
 </style>
