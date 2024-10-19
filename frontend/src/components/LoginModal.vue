@@ -176,7 +176,6 @@ async function confirmQR() {
   recovery.value = generateRecoverySecret();
   const blob = new Blob([recovery.value], { type: "text/plain" });
   recoveryUrl.value = URL.createObjectURL(blob);
-  console.log(recoveryUrl.value);
   // closeQR();
 }
 
@@ -202,8 +201,6 @@ async function confirmRecovery() {
       }),
     });
   }
-  // Remove any existing key
-  await deleteKey();
   // Derive the key from recovery secret
   const key = await deriveKey(recovery.value, salt.value);
   await storeKey(key);

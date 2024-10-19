@@ -41,9 +41,6 @@ async function storeKey(key: CryptoKey) {
     },
   });
 
-  // Delete the old key if it exists
-  await deleteKey();
-
   await db.add("keys", {
     id: "encryptionKey",
     key: await window.crypto.subtle.exportKey("jwk", key),
@@ -51,11 +48,7 @@ async function storeKey(key: CryptoKey) {
 }
 
 async function deleteKey() {
-  const db = await openDB("vault");
-  if (!db.objectStoreNames.contains("keys")) {
-    return;
-  }
-  await db.delete("keys", "encryptionKey");
+  deleteDB("vault");
 }
 
 async function retrieveKey() {
