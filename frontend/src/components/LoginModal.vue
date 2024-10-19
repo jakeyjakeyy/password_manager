@@ -28,6 +28,7 @@ const recovery = ref("");
 const recoveryUrl = ref("");
 const salt = ref("");
 const toggleRecovery = ref(false);
+const recoveryLoading = ref(false);
 
 if (cookies.get("access_token") && cookies.get("refresh_token")) {
   loggedin.value = true;
@@ -54,7 +55,7 @@ function closeAllModals() {
   });
 }
 
-const submitForm = async () => {
+async function submitForm() {
   if (register.value && password.value !== confirmPassword.value) {
     alert("Passwords do not match");
     password.value = "";
@@ -67,7 +68,7 @@ const submitForm = async () => {
     closeAllModals();
     router.push("/vault");
   }
-};
+}
 
 async function handleLogin() {
   register.value = false;
@@ -102,7 +103,7 @@ async function handleLogin() {
   const saltData = await saltResponse.json();
   // Derive our key
   const key = await deriveKey(password.value, saltData.salt);
-  storeKey(key);
+  await storeKey(key);
 
   cookies.set("refresh_token", data.refresh);
   cookies.set("access_token", data.access);
@@ -113,8 +114,8 @@ async function handleLogin() {
   confirmPassword.value = "";
 
   // Event listener to delete the derived key and trigger logout when the user leaves the page
-  window.addEventListener("beforeunload", (event) => {
-    deleteKey();
+  window.addEventListener("beforeunload", async (event) => {
+    await deleteKey();
     cookies.remove("access_token");
     cookies.remove("refresh_token");
     cookies.remove("salt");
@@ -180,6 +181,7 @@ async function confirmQR() {
 }
 
 async function confirmRecovery() {
+  recoveryLoading.value = true;
   // function to call the recovery API
   async function recoveryAPI(
     secret: string,
@@ -213,6 +215,7 @@ async function confirmRecovery() {
     encrypted.iv
   );
   await deleteKey();
+  recoveryLoading.value = false;
   closeQR();
 }
 
@@ -399,7 +402,10 @@ document.addEventListener("DOMContentLoaded", () => {
             <a :href="recoveryUrl" download="vault-recovery-secret.txt">
               Download Recovery Secret
             </a>
-            <button class="button is-link" @click="confirmRecovery">
+            <button
+              :class="['button', recoveryLoading ? 'is-skeleton' : 'is-link']"
+              @click="confirmRecovery"
+            >
               Close
             </button>
           </div>

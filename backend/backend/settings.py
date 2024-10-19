@@ -171,7 +171,8 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.ScopedRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {"strict": "3/hour"},
+    # TODO 3/hour
+    "DEFAULT_THROTTLE_RATES": {"strict": "5000/hour"},
 }
 
 SIMPLE_JWT = {

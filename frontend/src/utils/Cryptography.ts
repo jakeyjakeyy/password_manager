@@ -40,7 +40,6 @@ async function storeKey(key: CryptoKey) {
       }
     },
   });
-
   await db.add("keys", {
     id: "encryptionKey",
     key: await window.crypto.subtle.exportKey("jwk", key),
@@ -48,7 +47,7 @@ async function storeKey(key: CryptoKey) {
 }
 
 async function deleteKey() {
-  deleteDB("vault");
+  await deleteDB("vault");
 }
 
 async function retrieveKey() {
