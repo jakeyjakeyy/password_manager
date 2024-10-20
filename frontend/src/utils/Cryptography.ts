@@ -32,12 +32,10 @@ async function deriveKey(
 }
 
 async function storeKey(key: CryptoKey) {
-  await deleteDB("vault");
+  await deleteKey();
   const db = await openDB("vault", 1, {
     upgrade(db) {
-      if (!db.objectStoreNames.contains("keys")) {
-        db.createObjectStore("keys", { keyPath: "id" });
-      }
+      db.createObjectStore("keys", { keyPath: "id" });
     },
   });
   await db.add("keys", {

@@ -63,7 +63,6 @@ async function resetPassword() {
     const salt = saltData.salt;
     // Derive new key from new password
     const newKey = await cryptography.deriveKey(newPassword.value, salt);
-    await cryptography.deleteKey();
     await cryptography.storeKey(newKey);
     // Reencrypt vault entries
     let encryptedEntries = [];
@@ -111,7 +110,7 @@ async function resetPassword() {
 </script>
 
 <template>
-  <div v-if="!loading" class="reset-password-container">
+  <div class="reset-password-container">
     <h1 class="title">Reset Password</h1>
     <form @submit.prevent>
       <div class="field">
@@ -157,17 +156,18 @@ async function resetPassword() {
         </button>
         <button
           v-else
-          class="button is-primary is-fullwidth"
+          :class="[
+            'button',
+            'is-primary',
+            'is-fullwidth',
+            { 'is-skeleton': loading },
+          ]"
           @click="resetPassword"
         >
           Reset Password
         </button>
       </div>
     </form>
-  </div>
-  <div v-else class="loading-container">
-    <!-- <Loading /> -->
-    <p>Loading...</p>
   </div>
 </template>
 
