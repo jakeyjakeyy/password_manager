@@ -40,4 +40,10 @@ onMounted(() => {
   width: 100%;
   font-size: 3rem;
 }
+
+@media screen and (max-width: 768px) {
+  .account-container {
+    padding: 0 1rem;
+  }
+}
 </style>

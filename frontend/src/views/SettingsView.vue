@@ -28,4 +28,10 @@ onMounted(() => {
   padding: 0 25%;
   gap: 2rem;
 }
+
+@media screen and (max-width: 768px) {
+  .settings-container {
+    padding: 0 1rem;
+  }
+}
 </style>

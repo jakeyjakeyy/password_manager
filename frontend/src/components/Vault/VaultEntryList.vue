@@ -52,4 +52,12 @@ const setSelectionHandler = (entry: any) => {
   overflow-y: auto;
   transition: all 0.3s;
 }
+
+@media screen and (max-width: 768px) {
+  .vault-entry-list {
+    margin-top: 1rem;
+    padding: 0;
+    height: 100%;
+  }
+}
 </style>

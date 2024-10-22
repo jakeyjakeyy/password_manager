@@ -239,10 +239,13 @@ const setSelection = async (event: any) => {
   .vault-nav {
     width: 100vw;
     height: 30vh;
-    padding-bottom: 0;
+    padding: 0;
   }
+
   .vault-browser {
     width: 100vw;
+    padding: 0;
+    height: 70vh;
   }
 
   .import,
