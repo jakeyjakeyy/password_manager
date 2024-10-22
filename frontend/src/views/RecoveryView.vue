@@ -141,4 +141,22 @@ async function recover() {
   width: 100%;
   padding: 1rem 0;
 }
+
+.label {
+  font-size: 1.5rem;
+}
+
+.control {
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .recovery-container {
+    padding: 0 10%;
+  }
+
+  .form {
+    width: 100%;
+  }
+}
 </style>

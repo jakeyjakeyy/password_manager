@@ -48,7 +48,10 @@ onMounted(() => {
   // Timer to check for token expiration
   setInterval(() => {
     if (!checkToken()) {
-      if (window.location.pathname !== "/") {
+      if (
+        window.location.pathname !== "/" &&
+        window.location.pathname !== "/recovery"
+      ) {
         // Redirect to login if token is invalid
         window.location.href = "/";
       }
