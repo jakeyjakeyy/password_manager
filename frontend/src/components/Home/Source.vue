@@ -17,7 +17,7 @@
             ><a
               href="https://github.com/jakeyjakeyy/password_manager"
               target="_blank"
-              >here</a
+              >on GitHub</a
             ></span
           >.
         </p>

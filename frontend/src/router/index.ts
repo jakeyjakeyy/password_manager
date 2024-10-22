@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
-import AboutView from "../views/AboutView.vue";
-import VaultView from "../views/VaultView.vue";
-import RecoveryView from "../views/RecoveryView.vue";
-import AccountView from "@/views/AccountView.vue";
-import SettingsView from "@/views/SettingsView.vue";
+const HomeView = () => import("../views/HomeView.vue");
+const AboutView = () => import("../views/AboutView.vue");
+const AccountView = () => import("../views/AccountView.vue");
+const SettingsView = () => import("../views/SettingsView.vue");
+const VaultView = () => import("../views/VaultView.vue");
+const RecoveryView = () => import("../views/RecoveryView.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

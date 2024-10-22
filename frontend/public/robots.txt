@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /account
+Disallow: /vault
+
+User-agent: *
+Allow: /
+Disallow: /recovery
+Disallow: /settings
