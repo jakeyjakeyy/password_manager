@@ -137,14 +137,20 @@ function handleCopy(value: string, type: string) {
 <template>
   <div class="vaultEntry">
     <div class="vault-entry-content-container">
-      <div class="vaultEntryHeader" @click="handleCopy(entry.name, 'name')">
+      <div
+        class="vaultEntryHeader vault-container"
+        @click="handleCopy(entry.name, 'name')"
+      >
         <!-- Entry Name -->
         <h1 class="title">Entry Name</h1>
-        <p v-if="!editing" class="subtitle">
+        <p
+          v-if="copiedValue === 'name' && copiedConfirmation"
+          class="subtitle has-text-success"
+        >
+          Copied!
+        </p>
+        <p v-else-if="!editing" class="subtitle">
           {{ entry.name }}
-          <span v-if="copiedValue === 'name' && copiedConfirmation">
-            Copied!
-          </span>
         </p>
         <input
           v-else
@@ -157,15 +163,18 @@ function handleCopy(value: string, type: string) {
       </div>
       <!-- Entry Username -->
       <div
-        class="vaultEntryUsername"
+        class="vaultEntryUsername vault-container"
         @click="handleCopy(entry.username, 'username')"
       >
         <h1 class="title">Username</h1>
-        <p v-if="!editing" class="subtitle">
+        <p
+          v-if="copiedValue === 'username' && copiedConfirmation"
+          class="subtitle has-text-success"
+        >
+          Copied!
+        </p>
+        <p v-else-if="!editing" class="subtitle">
           {{ entry.username }}
-          <span v-if="copiedValue === 'username' && copiedConfirmation">
-            Copied!
-          </span>
         </p>
         <input
           v-else
@@ -177,7 +186,7 @@ function handleCopy(value: string, type: string) {
         />
       </div>
       <!-- Entry Password -->
-      <div class="vaultEntryPassword">
+      <div class="vaultEntryPassword vault-container">
         <h1 class="title" @click="handleCopy(entry.password, 'password')">
           Password
         </h1>
@@ -192,27 +201,22 @@ function handleCopy(value: string, type: string) {
           </button>
         </div>
         <p
-          v-if="showPassword && !editing"
+          v-if="copiedValue === 'password' && copiedConfirmation"
+          class="subtitle has-text-success"
+        >
+          Copied!
+        </p>
+        <p
+          v-else-if="showPassword && !editing"
           class="subtitle"
           @click="handleCopy(entry.password, 'password')"
         >
           {{ entry.password }}
-          <span v-if="copiedValue === 'password' && copiedConfirmation">
-            Copied!
-          </span>
         </p>
         <input
-          v-else-if="!showPassword && editing"
+          v-else-if="editing"
           class="input"
-          type="password"
-          v-model="entry.password"
-          :placeholder="entry.password"
-          v-on:change="changedValues = true"
-        />
-        <input
-          v-else-if="showPassword && editing"
-          class="input"
-          type="text"
+          :type="showPassword ? 'text' : 'password'"
           v-model="entry.password"
           :placeholder="entry.password"
           v-on:change="changedValues = true"
@@ -223,9 +227,6 @@ function handleCopy(value: string, type: string) {
           @click="handleCopy(entry.password, 'password')"
         >
           <span v-for="i in entry.password.length">*</span>
-          <span v-if="copiedValue === 'password' && copiedConfirmation">
-            Copied!
-          </span>
         </p>
       </div>
       <!-- Entry Files -->
@@ -311,12 +312,12 @@ function handleCopy(value: string, type: string) {
 <style scoped>
 .vaultEntry {
   position: relative;
-  margin-top: 5rem;
-  height: 70%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
+  overflow-y: auto;
 }
 .vaultEntryHeader {
   display: flex;
@@ -344,8 +345,13 @@ function handleCopy(value: string, type: string) {
 
 .vault-entry-content-container {
   display: flex;
+  width: fit-content;
   flex-direction: column;
   gap: 1rem;
+}
+
+.vault-container {
+  width: fit-content;
 }
 
 .entry-button-controls {
@@ -361,9 +367,13 @@ function handleCopy(value: string, type: string) {
 .password-controls {
   display: flex;
   flex-direction: row;
-  width: 15%;
   gap: 0.5rem;
   margin-left: 1rem;
+}
+
+.title {
+  align-items: start;
+  width: fit-content;
 }
 
 .subtitle {
@@ -377,11 +387,6 @@ function handleCopy(value: string, type: string) {
     margin-top: 0;
     padding-top: 0.5rem;
     border-top: 1px solid var(--bulma-primary);
-  }
-
-  .password-controls {
-    width: 100%;
-    padding-right: 1rem;
   }
 
   .vaultEntryHeader,
