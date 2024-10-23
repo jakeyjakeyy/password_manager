@@ -5,6 +5,7 @@ const AccountView = () => import("../views/AccountView.vue");
 const SettingsView = () => import("../views/SettingsView.vue");
 const VaultView = () => import("../views/VaultView.vue");
 const RecoveryView = () => import("../views/RecoveryView.vue");
+const NotFoundView = () => import("../views/NotFoundView.vue");
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: "/recovery",
       name: "recovery",
       component: RecoveryView,
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "not-found",
+      component: NotFoundView,
     },
   ],
 });
