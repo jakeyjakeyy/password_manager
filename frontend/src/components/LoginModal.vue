@@ -11,6 +11,7 @@ import {
   decryptPassword,
 } from "@/utils/Cryptography";
 import Qrcode from "qrcode.vue";
+import * as account from "@/utils/Account";
 const { cta } = defineProps(["cta"]);
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
@@ -94,15 +95,9 @@ async function handleLogin() {
   }
 
   // Get our salt
-  const saltResponse = await fetch(`${serverURL}/api/salt`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${data.access}`,
-    },
-  });
-  const saltData = await saltResponse.json();
+  salt.value = await account.getSalt();
   // Derive our key
-  const key = await deriveKey(password.value, saltData.salt);
+  const key = await deriveKey(password.value, salt.value);
   await storeKey(key);
 
   cookies.set("refresh_token", data.refresh);
@@ -138,6 +133,7 @@ async function handleRegister() {
     alert(data.error);
     return;
   }
+  localStorage.setItem("username", username.value);
   value.value = data.uri;
   secret.value = extractSecret();
   salt.value = data.salt;
@@ -183,38 +179,7 @@ async function confirmQR() {
 async function confirmRecovery() {
   recoveryLoading.value = true;
   // function to call the recovery API
-  async function recoveryAPI(
-    secret: string,
-    verify: boolean,
-    password?: Uint8Array,
-    iv?: Uint8Array
-  ) {
-    return fetch(`${serverURL}/api/recovery`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        iv: iv,
-        password: password,
-        secret: secret,
-        username: username.value,
-        verify: verify,
-      }),
-    });
-  }
-  // Derive the key from recovery secret
-  const key = await deriveKey(recovery.value, salt.value);
-  await storeKey(key);
-  // Encrypt the password with our backup key
-  const encrypted = await encryptPassword(password.value);
-  const res = await recoveryAPI(
-    recovery.value,
-    false,
-    encrypted.encryptedPassword,
-    encrypted.iv
-  );
-  await deleteKey();
+  await account.confirmRecovery(recovery.value, password.value, salt.value);
   recoveryLoading.value = false;
   closeQR();
 }

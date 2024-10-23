@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useCookies } from "vue3-cookies";
 import * as cryptography from "@/utils/Cryptography";
+import * as account from "@/utils/Account";
 import { Retrieve } from "@/utils/VaultEntry";
 const { cookies } = useCookies();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
@@ -9,6 +10,9 @@ const oldPassword = ref("");
 const newPassword = ref("");
 const confirmPassword = ref("");
 const loading = ref(false);
+const recoverySecret = ref("");
+const recoveryUrl = ref("");
+const progress = ref(0);
 
 async function resetPassword() {
   const res = await fetch(`${serverURL}/api/recovery/password`, {
@@ -29,7 +33,9 @@ async function resetPassword() {
     const vaultEntries = await Retrieve();
     let decryptedEntries = [];
     // Decrypt vault entries and their files
+    console.log("decrypting entries");
     for (const entry of vaultEntries) {
+      console.log(entry);
       let files = [];
       // Decrypt password
       const decryptedPassword = await cryptography.decryptPassword(
@@ -53,21 +59,17 @@ async function resetPassword() {
       });
     }
     // Get account's salt
-    const saltResponse = await fetch(`${serverURL}/api/salt`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${cookies.get("access_token")}`,
-      },
-    });
-    const saltData = await saltResponse.json();
-    const salt = saltData.salt;
+    const salt = await account.getSalt();
     // Derive new key from new password
     const newKey = await cryptography.deriveKey(newPassword.value, salt);
+    console.log("storing new key");
     await cryptography.storeKey(newKey);
     // Reencrypt vault entries
     let encryptedEntries = [];
     let encryptedFiles = [];
+    console.log("reencrypting entries");
     for (const entry of decryptedEntries) {
+      console.log(entry);
       const encryptedPassword = await cryptography.encryptPassword(
         entry.password
       );
@@ -98,14 +100,34 @@ async function resetPassword() {
       }),
     });
     if (batchRes.ok) {
-      alert("Password reset successfully.");
+      console.log("batch res ok");
+      progress.value = 50;
+      recoverySecret.value = cryptography.generateRecoverySecret();
+      const blob = new Blob([recoverySecret.value], { type: "text/plain" });
+      recoveryUrl.value = URL.createObjectURL(blob);
+      const salt = await account.getSalt();
+      console.log("confirming recovery");
+      await account.confirmRecovery(
+        recoverySecret.value,
+        newPassword.value,
+        salt
+      );
+      progress.value = 100;
+      console.log("opening modal");
+      const modal = document.getElementById("passwordResetModal");
+      modal?.classList.add("is-active");
     } else {
       alert("Failed to reset password. Please try again.");
     }
-    loading.value = false;
   } else {
     alert("Failed to reset password. Please try again.");
   }
+}
+
+function closeModal() {
+  const modal = document.getElementById("passwordResetModal");
+  modal?.classList.remove("is-active");
+  loading.value = false;
 }
 </script>
 
@@ -147,6 +169,14 @@ async function resetPassword() {
         </div>
       </div>
       <div class="field">
+        <progress
+          v-if="loading"
+          class="progress is-primary"
+          :value="progress"
+          max="100"
+        >
+          {{ progress }}%
+        </progress>
         <button
           v-if="!oldPassword || !newPassword || !confirmPassword"
           class="button is-primary is-fullwidth"
@@ -168,6 +198,32 @@ async function resetPassword() {
         </button>
       </div>
     </form>
+
+    <!-- Modal -->
+    <div class="modal" id="passwordResetModal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="box">
+          <h1 class="title">Recovery Secret</h1>
+          <p>
+            Resetting your password also creates a new recovery secret. Please
+            download this secret and store it in a safe place.
+          </p>
+          <a
+            :href="recoveryUrl"
+            download="recovery-secret.txt"
+            @click="closeModal()"
+          >
+            <button class="button is-primary is-fullwidth">Download</button>
+          </a>
+        </div>
+        <button
+          class="modal-close is-large"
+          aria-label="close"
+          @click="closeModal"
+        ></button>
+      </div>
+    </div>
   </div>
 </template>
 
