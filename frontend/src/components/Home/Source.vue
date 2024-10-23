@@ -38,6 +38,10 @@
   margin-bottom: 3rem;
 }
 
+.source-content {
+  text-align: center;
+}
+
 .header {
   display: flex;
   flex-direction: column;
