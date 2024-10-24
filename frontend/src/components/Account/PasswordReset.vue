@@ -19,9 +19,13 @@ const progress = ref(0);
 async function resetPassword() {
   // Begin process of reencrypting vault entries
   loading.value = true;
+  progress.value = 0;
+
   // Retrieve vault entries
   const vaultEntries = await Retrieve();
   let decryptedEntries = [];
+  progress.value = 10;
+
   // Decrypt vault entries and their files
   for (const entry of vaultEntries) {
     let files = [];
@@ -46,11 +50,15 @@ async function resetPassword() {
       files: files,
     });
   }
+  progress.value = 30;
+
   // Get account's salt
   const salt = await account.getSalt();
   // Derive new key from new password
   const newKey = await cryptography.deriveKey(newPassword.value, salt);
   await cryptography.storeKey(newKey);
+  progress.value = 40;
+
   // Reencrypt vault entries
   let encryptedEntries = [];
   let encryptedFiles = [];
@@ -72,6 +80,7 @@ async function resetPassword() {
     entry.files = encryptedFiles;
     encryptedEntries.push(entry);
   }
+  progress.value = 60;
 
   // Send reencrypted vault entries to server
   const batchRes = await fetch(`${serverURL}/api/vault/edit-batch`, {
@@ -86,7 +95,7 @@ async function resetPassword() {
   });
 
   if (batchRes.ok) {
-    progress.value = 50;
+    progress.value = 70;
     recoverySecret.value = cryptography.generateRecoverySecret();
     const blob = new Blob([recoverySecret.value], { type: "text/plain" });
     recoveryUrl.value = URL.createObjectURL(blob);
@@ -105,6 +114,7 @@ async function resetPassword() {
     });
 
     if (res.ok) {
+      progress.value = 90;
       const salt = await account.getSalt();
       await account.confirmRecovery(
         recoverySecret.value,
