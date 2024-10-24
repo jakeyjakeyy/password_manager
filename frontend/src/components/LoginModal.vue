@@ -99,6 +99,8 @@ async function handleLogin() {
     twoFA.value = "";
     return;
   }
+  cookies.set("refresh_token", data.refresh);
+  cookies.set("access_token", data.access);
 
   // Get our salt
   salt.value = await account.getSalt();
@@ -106,8 +108,6 @@ async function handleLogin() {
   const key = await deriveKey(password.value, salt.value);
   await storeKey(key);
 
-  cookies.set("refresh_token", data.refresh);
-  cookies.set("access_token", data.access);
   localStorage.setItem("username", username.value);
   loggedin.value = true;
   username.value = "";

@@ -65,10 +65,8 @@ class Recovery(APIView):
             user = models.User.objects.get(username=request.data["username"])
             if not user:
                 return Response({"message": "Unauthorized"}, status=401)
-            logger.info(f"User {user.username} found")
 
             if request.data["verify"]:
-                logger.info("Verifying recovery secret")
                 provided_secret = request.data["secret"]
                 recovery_secret = models.RecoverySecret.objects.get(user=user)
                 if recovery_secret.attempts >= 3:
@@ -101,7 +99,6 @@ class Recovery(APIView):
                     recovery_secret.save()
                     return Response({"message": "Unauthorized"}, status=401)
             else:
-                logger.info("Setting recovery secret")
                 raw_secret = request.data["secret"]
                 recovery_secret, created = models.RecoverySecret.objects.get_or_create(
                     user=user
@@ -168,7 +165,6 @@ class VaultAdd(APIView):
                 password=password_bytes.hex(),
                 iv=iv_bytes.hex(),
             )
-            logger.info("entry created")
             entry.save()
             return Response({"message": "Entry created", "id": entry.id}, status=200)
         except Exception as e:
@@ -420,7 +416,6 @@ class VaultEditBatch(APIView):
                     iv_bytes = ToBytes(editedEntry["iv"])
                     entry.name = editedEntry["name"]
                     entry.username = editedEntry["username"]
-                    logger.info(entry.username)
                     entry.password = password_bytes.hex()
                     entry.iv = iv_bytes.hex()
                     entry.save()

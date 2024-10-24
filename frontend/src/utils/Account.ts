@@ -6,13 +6,12 @@ import {
   deleteKey,
 } from "@/utils/Cryptography";
 const { cookies } = useCookies();
-
-const accessToken = cookies.get("access_token");
-const refreshToken = cookies.get("refresh_token");
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 
 async function getSalt() {
-  if (!accessToken) {
+  const refreshToken = cookies.get("refresh_token");
+  const accessToken = cookies.get("access_token");
+  if (!refreshToken && !accessToken) {
     return null;
   }
   const saltResponse = await fetch(`${serverURL}/api/salt`, {
