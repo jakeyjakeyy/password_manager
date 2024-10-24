@@ -7,11 +7,15 @@ import {
   objectToUint8Array,
 } from "@/utils/Cryptography";
 import { RouterLink, useRouter } from "vue-router";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 const router = useRouter();
 const username = ref("");
 const secret = ref("");
+
+onMounted(() => {
+  document.title = "Recovery - The Vault";
+});
 
 async function recover() {
   const response = await fetch(`${serverURL}/api/recovery`, {

@@ -9,6 +9,7 @@ onMounted(() => {
     if (button.id === "homeRouterButton") button.classList.add("is-active");
     else button.classList.remove("is-active");
   });
+  document.title = "Home - The Vault";
 });
 </script>
 

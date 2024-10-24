@@ -18,6 +18,10 @@ interface VaultEntry {
   iv: string;
 }
 
+onMounted(() => {
+  document.title = "Vault - The Vault";
+});
+
 const fuseOptions = {
   keys: ["name", "username", "url", "notes"],
   includeScore: true,

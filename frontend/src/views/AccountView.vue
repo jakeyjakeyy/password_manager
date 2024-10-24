@@ -9,7 +9,7 @@ onMounted(() => {
   if (!checkToken()) {
     router.push("/");
   }
-  document.title = "Account";
+  document.title = "Account - The Vault";
 });
 </script>
 

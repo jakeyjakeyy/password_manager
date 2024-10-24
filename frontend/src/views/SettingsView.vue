@@ -2,7 +2,7 @@
 import ThemeSelector from "@/components/Settings/ThemeSelector.vue";
 import { onMounted } from "vue";
 onMounted(() => {
-  document.title = "Settings";
+  document.title = "Settings - The Vault";
 });
 </script>
 
