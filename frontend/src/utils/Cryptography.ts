@@ -32,13 +32,12 @@ async function deriveKey(
 }
 
 async function storeKey(key: CryptoKey) {
-  await deleteKey();
   const db = await openDB("vault", 1, {
     upgrade(db) {
       db.createObjectStore("keys", { keyPath: "id" });
     },
   });
-  await db.add("keys", {
+  await db.put("keys", {
     id: "encryptionKey",
     key: await window.crypto.subtle.exportKey("jwk", key),
   });
