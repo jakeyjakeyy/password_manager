@@ -48,7 +48,9 @@ function openModal($el: any) {
   $el.classList.add("is-active");
 }
 function closeModal($el: any) {
-  $el.classList.remove("is-active");
+  let modal = document.getElementById("login-modal");
+  if (cta) modal = document.getElementById("cta-modal");
+  modal?.classList.remove("is-active");
 }
 function closeAllModals() {
   (document.querySelectorAll(".modal") || []).forEach(($modal) => {
@@ -378,7 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <button
           class="modal-close is-large"
           aria-label="close"
-          @click="closeModal"
+          @click="closeModal(cta)"
         ></button>
       </div>
     </div>

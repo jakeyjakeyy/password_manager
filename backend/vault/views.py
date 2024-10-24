@@ -298,7 +298,8 @@ class VaultRetrieve(APIView):
 # Extend the default TokenObtainPairSerializer to include 2FA
 class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
     default_error_messages = {
-        "no_2fa": "2FA is not set up for this user.",
+        "no_2fa": "2FA is not set up for this user. Account will be deleted.",
+        "no_recovery": "Recovery secret is not set up for this user. Account will be deleted.",
         "invalid_2fa": "Invalid 2FA token.",
     }
 
@@ -308,6 +309,12 @@ class TokenObtainPairSerializerWith2FA(TokenObtainPairSerializer):
 
         user = self.user
 
+        recovery = models.RecoverySecret.objects.filter(user=user).exists()
+        if not recovery:
+            user.delete()
+            raise serializers.ValidationError(
+                self.default_error_messages["no_recovery"]
+            )
         topt = models.TOTPDevice.objects.get(user=user)
         if not topt.confirmed:
             user.delete()
