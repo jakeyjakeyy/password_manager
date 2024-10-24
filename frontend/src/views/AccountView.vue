@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { checkToken } from "@/utils/RefreshToken";
 import PasswordReset from "@/components/Account/PasswordReset.vue";
+const router = useRouter();
 
 onMounted(() => {
   if (!checkToken()) {
-    window.location.href = "/";
+    router.push("/");
   }
   document.title = "Account";
 });

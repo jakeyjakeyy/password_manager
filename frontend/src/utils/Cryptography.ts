@@ -44,7 +44,9 @@ async function storeKey(key: CryptoKey) {
 }
 
 async function deleteKey() {
-  await deleteDB("vault");
+  // await deleteDB("vault");
+  const db = await openDB("vault");
+  await db.delete("keys", "encryptionKey");
 }
 
 async function retrieveKey() {

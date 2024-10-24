@@ -39,7 +39,11 @@ if (!cta) {
   const checklogin = setInterval(() => {
     if (cookies.get("access_token") && cookies.get("refresh_token")) {
       loggedin.value = true;
-      clearInterval(checklogin);
+    }
+  }, 100);
+  const checklogout = setInterval(() => {
+    if (!cookies.get("access_token") && !cookies.get("refresh_token")) {
+      loggedin.value = false;
     }
   }, 100);
 }
@@ -112,10 +116,7 @@ async function handleLogin() {
 
   // Event listener to delete the derived key and trigger logout when the user leaves the page
   window.addEventListener("beforeunload", async (event) => {
-    await deleteKey();
-    cookies.remove("access_token");
-    cookies.remove("refresh_token");
-    cookies.remove("salt");
+    await handleLogout();
   });
 }
 
@@ -144,14 +145,11 @@ async function handleRegister() {
   // handleLogin();
 }
 
-const handleLogout = () => {
-  cookies.remove("access_token");
-  cookies.remove("refresh_token");
-  cookies.remove("salt");
-  localStorage.removeItem("username");
+const handleLogout = async () => {
+  await account.handleLogout();
   loggedin.value = false;
   closeAllModals();
-  window.location.href = "/";
+  router.push("/");
 };
 
 const closeQR = () => {

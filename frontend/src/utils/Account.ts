@@ -67,4 +67,13 @@ async function confirmRecovery(
   return res;
 }
 
-export { confirmRecovery, getSalt };
+async function handleLogout() {
+  await deleteKey();
+  cookies.remove("access_token");
+  cookies.remove("refresh_token");
+  cookies.remove("salt");
+  localStorage.removeItem("username");
+  return 0;
+}
+
+export { confirmRecovery, getSalt, handleLogout };

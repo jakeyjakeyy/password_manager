@@ -38,7 +38,7 @@ const selectedEntry = ref<VaultEntry | null>(null);
 onMounted(async () => {
   if (!checkToken()) {
     // Redirect to login if token is invalid
-    window.location.href = "/";
+    router.push("/");
   } else {
     // Retrieve vault entries and initialize Fuse
     vaultEntries.value = await Retrieve();

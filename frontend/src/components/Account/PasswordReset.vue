@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useCookies } from "vue3-cookies";
+import { useRouter } from "vue-router";
 import * as cryptography from "@/utils/Cryptography";
 import * as account from "@/utils/Account";
 import { Retrieve } from "@/utils/VaultEntry";
 const { cookies } = useCookies();
+const router = useRouter();
 const serverURL = import.meta.env.VITE_BACKEND_URL;
 const oldPassword = ref("");
 const newPassword = ref("");
@@ -15,105 +17,101 @@ const recoveryUrl = ref("");
 const progress = ref(0);
 
 async function resetPassword() {
-  const res = await fetch(`${serverURL}/api/recovery/password`, {
+  // Begin process of reencrypting vault entries
+  loading.value = true;
+  // Retrieve vault entries
+  const vaultEntries = await Retrieve();
+  let decryptedEntries = [];
+  // Decrypt vault entries and their files
+  for (const entry of vaultEntries) {
+    let files = [];
+    // Decrypt password
+    const decryptedPassword = await cryptography.decryptPassword(
+      entry.password,
+      entry.iv
+    );
+    for (const file of entry.files) {
+      const decryptedFile = await cryptography.decryptFile(
+        file.file,
+        file.iv,
+        file.name
+      );
+      const url = URL.createObjectURL(decryptedFile);
+      let fileObj = { file: decryptedFile, url: url, id: file.id };
+      files.push(fileObj);
+    }
+    decryptedEntries.push({
+      ...entry,
+      password: decryptedPassword,
+      files: files,
+    });
+  }
+  // Get account's salt
+  const salt = await account.getSalt();
+  // Derive new key from new password
+  const newKey = await cryptography.deriveKey(newPassword.value, salt);
+  await cryptography.storeKey(newKey);
+  // Reencrypt vault entries
+  let encryptedEntries = [];
+  let encryptedFiles = [];
+  for (const entry of decryptedEntries) {
+    const encryptedPassword = await cryptography.encryptPassword(
+      entry.password
+    );
+    entry.password = encryptedPassword.encryptedPassword;
+    entry.iv = encryptedPassword.iv;
+    for (const file of entry.files) {
+      const encryptedFile = await cryptography.encryptFile(file.file);
+      encryptedFiles.push({
+        file: encryptedFile.encryptedFile,
+        iv: encryptedFile.iv,
+        name: file.file.name,
+        id: file.id,
+      });
+    }
+    entry.files = encryptedFiles;
+    encryptedEntries.push(entry);
+  }
+
+  // Send reencrypted vault entries to server
+  const batchRes = await fetch(`${serverURL}/api/vault/edit-batch`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${cookies.get("access_token")}`,
     },
     body: JSON.stringify({
-      oldPassword: oldPassword.value,
-      newPassword: newPassword.value,
+      entries: encryptedEntries,
     }),
   });
-  if (res.ok) {
-    // Begin process of reencrypting vault entries
-    loading.value = true;
-    // Retrieve vault entries
-    const vaultEntries = await Retrieve();
-    let decryptedEntries = [];
-    // Decrypt vault entries and their files
-    console.log("decrypting entries");
-    for (const entry of vaultEntries) {
-      console.log(entry);
-      let files = [];
-      // Decrypt password
-      const decryptedPassword = await cryptography.decryptPassword(
-        entry.password,
-        entry.iv
-      );
-      for (const file of entry.files) {
-        const decryptedFile = await cryptography.decryptFile(
-          file.file,
-          file.iv,
-          file.name
-        );
-        const url = URL.createObjectURL(decryptedFile);
-        let fileObj = { file: decryptedFile, url: url, id: file.id };
-        files.push(fileObj);
-      }
-      decryptedEntries.push({
-        ...entry,
-        password: decryptedPassword,
-        files: files,
-      });
-    }
-    // Get account's salt
-    const salt = await account.getSalt();
-    // Derive new key from new password
-    const newKey = await cryptography.deriveKey(newPassword.value, salt);
-    console.log("storing new key");
-    await cryptography.storeKey(newKey);
-    // Reencrypt vault entries
-    let encryptedEntries = [];
-    let encryptedFiles = [];
-    console.log("reencrypting entries");
-    for (const entry of decryptedEntries) {
-      console.log(entry);
-      const encryptedPassword = await cryptography.encryptPassword(
-        entry.password
-      );
-      entry.password = encryptedPassword.encryptedPassword;
-      entry.iv = encryptedPassword.iv;
-      for (const file of entry.files) {
-        const encryptedFile = await cryptography.encryptFile(file.file);
-        encryptedFiles.push({
-          file: encryptedFile.encryptedFile,
-          iv: encryptedFile.iv,
-          name: file.file.name,
-          id: file.id,
-        });
-      }
-      entry.files = encryptedFiles;
-      encryptedEntries.push(entry);
-    }
 
-    // Send reencrypted vault entries to server
-    const batchRes = await fetch(`${serverURL}/api/vault/edit-batch`, {
+  if (batchRes.ok) {
+    progress.value = 50;
+    recoverySecret.value = cryptography.generateRecoverySecret();
+    const blob = new Blob([recoverySecret.value], { type: "text/plain" });
+    recoveryUrl.value = URL.createObjectURL(blob);
+
+    // Call recovery/password endpoint
+    const res = await fetch(`${serverURL}/api/recovery/password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${cookies.get("access_token")}`,
       },
       body: JSON.stringify({
-        entries: encryptedEntries,
+        oldPassword: oldPassword.value,
+        newPassword: newPassword.value,
       }),
     });
-    if (batchRes.ok) {
-      console.log("batch res ok");
-      progress.value = 50;
-      recoverySecret.value = cryptography.generateRecoverySecret();
-      const blob = new Blob([recoverySecret.value], { type: "text/plain" });
-      recoveryUrl.value = URL.createObjectURL(blob);
+
+    if (res.ok) {
       const salt = await account.getSalt();
-      console.log("confirming recovery");
       await account.confirmRecovery(
         recoverySecret.value,
         newPassword.value,
         salt
       );
       progress.value = 100;
-      console.log("opening modal");
       const modal = document.getElementById("passwordResetModal");
       modal?.classList.add("is-active");
     } else {
@@ -122,12 +120,15 @@ async function resetPassword() {
   } else {
     alert("Failed to reset password. Please try again.");
   }
+  loading.value = false;
 }
 
-function closeModal() {
+async function closeModal() {
   const modal = document.getElementById("passwordResetModal");
   modal?.classList.remove("is-active");
   loading.value = false;
+  await account.handleLogout();
+  router.push("/");
 }
 </script>
 
@@ -211,7 +212,7 @@ function closeModal() {
           </p>
           <a
             :href="recoveryUrl"
-            download="recovery-secret.txt"
+            download="vault-recovery-secret.txt"
             @click="closeModal()"
           >
             <button class="button is-primary is-fullwidth">Download</button>
